@@ -1,0 +1,56 @@
+services:
+  # Base de Datos (MySQL) - Requisito de persistencia y gestión de datos 
+  db:
+    image: mysql:8.0
+    container_name: xuxe-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: xuxedex_db
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - xuxe-network
+
+  # Backend (Laravel) - Gestión del servidor y API REST 
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: xuxe-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - xuxe-network
+    # Comando para iniciar el servidor de desarrollo de Laravel 
+    command: php artisan serve --host=0.0.0.0 --port=8000
+
+  # Frontend (Angular) - Interfaz dinámica del usuario 
+  frontend:
+    image: node:20
+    container_name: xuxe-frontend
+    working_dir: /app
+    restart: unless-stopped
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend:/app
+    networks:
+      - xuxe-network
+    # Comando para iniciar servidor de angular
+    command: npx ng serve --host 0.0.0.0
+
+# Definición de la red interna y volúmenes para persistencia 
+networks:
+  xuxe-network:
+    driver: bridge
+
+volumes:
+  db_data:
