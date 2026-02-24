@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -44,5 +46,31 @@ class AuthController extends Controller
             'message' => 'Usuario registrado con éxito',
             'user' => $user
         ], 201);
+    }
+
+    public function login(Request $request)
+    {
+        // Validar que entrada email y password
+        $credentials = $request->only('email', 'password');
+
+        // Intentar autenticar: Si falla, devolvemos error 401
+        if (!$token = JWTAuth::attempt($credentials)){
+            return response()->json(['error' => 'Credenciales inválidas'], 401);
+        }
+
+        // Si todo esta bien, devolvemos el token y los datos del usuario
+        return $this->respondWithToken($token);
+    }
+
+    // Función de auyda para dar formato a la respuesta del Token
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
+            // Usamos JWTAuth para obtener al usuario identificado por el token actual
+            'user' => \PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth::setToken($token)->toUser() // Aquí vendrá el objeto del usuario
+        ]);
     }
 }
