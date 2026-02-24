@@ -45,4 +45,29 @@ class AuthController extends Controller
             'user' => $user
         ], 201);
     }
+
+    public function login(Request $request)
+    {
+        // Validar que entrada email y password
+        $credentials = $request->only('email', 'password');
+
+        // Intentar autenticar: Si falla, devolvemos error 401
+        if (!$token = auth()->attempt($credentials)){
+            return response()->json(['error' => 'Credenciales inválidas'], 401);
+        }
+
+        // Si todo esta bien, devolvemos el token y los datos del usuario
+        return $this->respondWithToken($token);
+    }
+
+    // Función de auyda para dar formato a la respuesta del Token
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',+
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'user' => auth()->user()
+        ]);
+    }
 }
