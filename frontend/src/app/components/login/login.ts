@@ -1,11 +1,11 @@
 import { Component, signal } from '@angular/core';
-import { Router } from '@angular/router'; 
+import { Router, RouterLink } from '@angular/router'; 
 import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
@@ -24,7 +24,7 @@ export class Login {
         this.token.set(res.access_token);
         console.log('Login exitoso para:', res.user.name);
         
-        // Magia: Nos teletransportamos al Dashboard
+        // Nos pasamos al Dashboard
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
