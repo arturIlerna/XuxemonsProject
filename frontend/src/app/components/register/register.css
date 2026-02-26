@@ -1,0 +1,22 @@
+.register-container {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 20px;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.login-link {
+  margin-top: 20px;
+  font-size: 0.9em;
+}
+
+.login-link a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,23 @@
+<div class="register-container">
+  <h2>Crear cuenta en Xuxedex</h2>
+  
+  <form (submit)="onRegister($event)">
+    <input type="text" name="name" placeholder="Nombre de usuario" required>
+    <br><br>
+    
+    <input type="email" name="email" placeholder="Correo electrónico" required>
+    <br><br>
+    
+    <input type="password" name="password" placeholder="Contraseña" required>
+    <br><br>
+
+    <input type="password" name="password_confirmation" placeholder="Confirmar Contraseña" required>
+    <br><br>
+    
+    <button type="submit">Registrarse</button>
+  </form>
+
+  <p class="login-link">
+    ¿Ya tienes una cuenta? <a routerLink="/login">Inicia sesión aquí</a>
+  </p>
+</div>

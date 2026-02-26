@@ -12,9 +12,12 @@
   @if (token()) {
     <div class="token-success">
       <h3>¡Token recibido con éxito!</h3>
-      <p style="word-break: break-all; color: green;">{{ token() }}</p>
+      <p class="token-text">{{ token() }}</p>
     </div>
   } @else {
     <p>Por favor, introduce tus credenciales para obtener el token.</p>
   }
+  <p class="login-link">
+    ¿No tienes cuenta? <a routerLink="/register">Regístrate aquí</a>
+  </p>
 </div>
