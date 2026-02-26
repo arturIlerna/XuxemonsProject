@@ -1,0 +1,20 @@
+<div class="login-container">
+  <h2>Login Xuxedex</h2>
+  
+  <form (submit)="onLogin($event)">
+    <input type="email" name="email" placeholder="Email" required #email>
+    <br><br>
+    <input type="password" name="password" placeholder="Contraseña" required #password>
+    <br><br>
+    <button type="submit">Entrar</button>
+  </form>
+
+  @if (token()) {
+    <div class="token-success">
+      <h3>¡Token recibido con éxito!</h3>
+      <p style="word-break: break-all; color: green;">{{ token() }}</p>
+    </div>
+  } @else {
+    <p>Por favor, introduce tus credenciales para obtener el token.</p>
+  }
+</div>
