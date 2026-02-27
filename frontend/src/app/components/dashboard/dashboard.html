@@ -1,4 +1,15 @@
 <div class="dashboard-container">
-  <h2>¡Bienvenido al Dashboard de Xuxedex, jefazo! 🚀</h2>
-  <p>Si estás viendo esto, la redirección ha sido perfecta.</p>
+  <header class="dashboard-header">
+    <h2>¡Bienvenido a la Xuxedex, {{ userName }}! 🚀</h2>
+    
+    <div class="header-buttons">
+      <button routerLink="/profile" class="btn-profile">Mi Perfil</button>
+      
+      <button (click)="onLogout()" class="btn-logout">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <main style="margin-top: 50px;">
+    <p>Aquí irán tus Xuxemons muy pronto...</p>
+  </main>
 </div>

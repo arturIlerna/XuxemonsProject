@@ -1,10 +1,12 @@
 import { Routes } from '@angular/router';
 import { Login } from './components/login/login';
 import { Dashboard } from './components/dashboard/dashboard';
-import { authGuard } from './guards/auth.guard'; // <-- Importamos al portero
+import { Register } from './components/register/register';
+import { authGuard } from './guards/auth.guard'; // Import del guard
 
 export const routes: Routes = [
   { path: 'login', component: Login },
+  { path: 'register', component: Register },
   { 
     path: 'dashboard', 
     component: Dashboard, 

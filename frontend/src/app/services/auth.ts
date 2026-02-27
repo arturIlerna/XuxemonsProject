@@ -41,4 +41,11 @@ export class Auth {
   getToken() {
     return localStorage.getItem('token');
   }
+  
+  // Función para cerrar sesión
+  logout() {
+    // Borramos el token y los datos del usuario del navegador
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  }
 }

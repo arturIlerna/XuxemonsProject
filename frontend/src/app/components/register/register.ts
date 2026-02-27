@@ -16,6 +16,7 @@ export class Register {
     event.preventDefault();
     
     const name = event.target.name.value;
+    const lastname = event.target.lastname.value;
     const email = event.target.email.value;
     const password = event.target.password.value;
     const password_confirmation = event.target.password_confirmation.value;
@@ -26,11 +27,11 @@ export class Register {
       return;
     }
 
-    this.authService.register({ name, email, password, password_confirmation }).subscribe({
+    this.authService.register({ name, lastname, email, password, password_confirmation }).subscribe({
       next: (res) => {
         console.log('Registro exitoso para:', res.user?.name);
         
-        // Como en el auth.ts ya guardamos el token al registrar, vamos directos al dashboard
+        // En el auth.ts ya guardamos el token al registrar, vamos directos al dashboard
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
