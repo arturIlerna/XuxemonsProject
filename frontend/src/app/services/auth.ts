@@ -48,4 +48,10 @@ export class Auth {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   }
+
+  // Función para darse de baja/eliminar cuenta
+  deleteAccount(userId: number): Observable<any> {
+    // Hacemos una petición DELETE a la ruta de Laravel
+    return this.http.delete(`${this.apiUrl}/users/${userId}`);
+  }
 }

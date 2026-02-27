@@ -35,3 +35,6 @@ Route::middleware(['auth:api'])->group(function () {
 Route::get('/health', function () {
     return response()->json(['status' => 'OK', 'message' => 'API de Xuxedex funcionando']);
 });
+
+// Ruta para darse de baja
+Route::delete('/users/{id}', [AuthController::class, 'destroy']);

@@ -73,4 +73,26 @@ class AuthController extends Controller
             'user' => \PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth::setToken($token)->toUser() // Aquí vendrá el objeto del usuario
         ]);
     }
+
+    // Función para darse de baja/eliminar usuario
+    public function destroy($id)
+    {
+        // Buscamos al usuario por su ID
+        $user = \App\Models\User::find($id);
+
+        // Si no existe, devolvemos un error 404
+        if (!$user) {
+            return response()->json([
+                'message' => 'Usuario no encontrado'
+            ], 404);
+        }
+
+        // Si existe, lo eliminamos de la base de datos
+        $user->delete();
+
+        // Le respondemos a Angular que todo ha ido perfecto (Código 200)
+        return response()->json([
+            'message' => 'Cuenta eliminada correctamente'
+        ], 200);
+    }
 }

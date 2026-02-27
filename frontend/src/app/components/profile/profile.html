@@ -1,1 +1,18 @@
-<p>profile works!</p>
+<div class="profile-container">
+  <h2>Información de Usuario 🎮</h2>
+  
+  @if (user) {
+    <div class="user-info">
+      <p><strong>Nombre:</strong> {{ user.name }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+    </div>
+
+    <div class="profile-actions">
+      <button routerLink="/dashboard" class="btn-back">Volver al Dashboard</button>
+      
+      <button (click)="onDeleteAccount()" class="btn-danger">Darse de Baja</button>
+    </div>
+  } @else {
+    <p>Cargando información...</p>
+  }
+</div>
