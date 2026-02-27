@@ -38,3 +38,6 @@ Route::get('/health', function () {
 
 // Ruta para darse de baja
 Route::delete('/users/{id}', [AuthController::class, 'destroy']);
+
+// Ruta para actualizar el perfil del usuario
+Route::put('/users/{id}', [AuthController::class, 'update']);

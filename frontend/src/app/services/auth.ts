@@ -54,4 +54,10 @@ export class Auth {
     // Hacemos una petición DELETE a la ruta de Laravel
     return this.http.delete(`${this.apiUrl}/users/${userId}`);
   }
+  
+  // Función para actualizar los datos del usuario
+  updateProfile(userId: number, userData: any): Observable<any> {
+    // Hacemos una petición PUT a la ruta de Laravel
+    return this.http.put(`${this.apiUrl}/users/${userId}`, userData);
+  }
 }
