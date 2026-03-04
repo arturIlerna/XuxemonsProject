@@ -1,12 +1,46 @@
 /* =========================================
-   TU DISEÑO ORIGINAL (ESTRUCTURA Y ENLACES)
+   NUEVO: RESET GLOBAL PARA FULLSCREEN TOTAL
+   ========================================= */
+html, body {
+  margin: 0; /* Quitamos el margen por defecto del navegador */
+  padding: 0; /* Quitamos el relleno por defecto */
+  height: 100%; /* Aseguramos que ocupe todo el alto */
+  width: 100%; /* Aseguramos que ocupe todo el ancho */
+}
+
+/* =========================================
+   FONDO DE PANTALLA COMPLETA
+   ========================================= */
+.background-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* La misma imagen épica para el registro */
+  background-image: url('/images/login-registro.png'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.15);
+}
+
+/* =========================================
+   EFECTO CRISTAL MANTENIDO (35% TRASLÚCIDO)
    ========================================= */
 .register-container {
   max-width: 400px;
-  margin: 40px auto;
-  padding: 20px;
+  width: 100%;
+  padding: 30px;
   text-align: center;
   font-family: sans-serif;
+  
+  /* Mantengo el fondo muy transparente (35%) y el borde fino */
+  background-color: rgba(255, 255, 255, 0.35); 
+  backdrop-filter: blur(10px); 
+  border-radius: 12px;
+  
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2); 
 }
 
 .login-link {
@@ -24,22 +58,18 @@
   text-decoration: underline;
 }
 
-
 /* =========================================
-   ESTILOS DE LOS FORMULARIOS (NUEVO)
+   ESTILOS DE LOS FORMULARIOS Y BOTÓN
    ========================================= */
-
-/* Hacemos que los inputs queden bien alineados y con algo de relleno */
 input {
   width: 100%;
   padding: 10px;
-  box-sizing: border-box; /* Evita que el padding rompa el tamaño del contenedor */
+  box-sizing: border-box; 
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
 }
 
-/* Un estilo guapo y moderno para el botón, a juego con el azul de tu enlace */
 button {
   width: 100%;
   padding: 12px;
@@ -59,46 +89,17 @@ button:hover {
 }
 
 /* =========================================
-   MAGIA DE ANGULAR (ERRORES Y VALIDACIONES)
-   ========================================= */
-
-/* Angular pone esta clase si hay errores y el usuario ya tocó el campo */
-input.ng-invalid.ng-touched {
-  border: 2px solid #ff4444;
-  background-color: #fff0f0;
-  outline: none;
-}
-
-/* Angular pone esta clase si el campo está perfecto */
-input.ng-valid.ng-touched {
-  border: 2px solid #00C851;
-}
-
-/* Estilos para los textos rojos de advertencia que metimos con el @if */
-.error-msg small {
-  color: #ff4444;
-  font-size: 0.85rem;
-  font-weight: bold;
-  display: block;
-  margin-top: 4px;
-  text-align: left; /* Los errores se leen mejor alineados a la izquierda bajo el input */
-}
-
-/* =========================================
    ANIMACIÓN DE CARGA (SPINNER)
    ========================================= */
-
-/* Estilo para cuando el botón está bloqueado (cargando) */
 button:disabled {
-  background-color: #93c5fd; /* Un azul más claro para que parezca desactivado */
+  background-color: #93c5fd;
   cursor: not-allowed;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px; /* Espacio entre el spinner y el texto */
+  gap: 10px;
 }
 
-/* El circulito que da vueltas */
 .spinner {
   display: inline-block;
   width: 18px;
@@ -109,7 +110,39 @@ button:disabled {
   animation: spin 1s ease-in-out infinite;
 }
 
-/* La animación que hace que gire 360 grados sin parar */
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* =========================================
+   MAGIA DE ANGULAR (ERRORES Y VALIDACIONES)
+   ========================================= */
+input.ng-invalid.ng-touched {
+  border: 2px solid #ff4444;
+  background-color: rgba(255, 240, 240, 0.8);
+  outline: none;
+}
+
+input.ng-valid.ng-touched {
+  border: 2px solid #00C851;
+}
+
+.error-msg small {
+  color: #ff4444;
+  font-size: 0.85rem;
+  font-weight: bold;
+  display: block;
+  margin-top: 4px;
+  text-align: left;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN MANTENIDO (MÓVILES)
+   ========================================= */
+@media (max-width: 576px) {
+  .register-container {
+    padding: 20px;
+    max-width: 90%;
+    margin: 0 15px;
+  }
 }

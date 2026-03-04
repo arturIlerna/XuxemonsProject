@@ -1,61 +1,63 @@
-<div class="login-container">
-  <h2>Login Xuxedex</h2>
-  
-  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+<div class="background-wrapper">
+  <div class="login-container">
+    <h2>Login Xuxedex</h2>
     
-    <div>
-      <input type="email" formControlName="email" placeholder="Email">
-      @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
-        <div class="error-msg">
-          @if (loginForm.get('email')?.errors?.['required']) {
-            <small>El correo es obligatorio.</small>
-          }
-          @if (loginForm.get('email')?.errors?.['email']) {
-            <small>Debe ser un correo válido.</small>
-          }
-        </div>
-      }
-    </div>
-    <br>
-    
-    <div>
-      <input type="password" formControlName="password" placeholder="Contraseña">
-      @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
-        <div class="error-msg">
-          @if (loginForm.get('password')?.errors?.['required']) {
-            <small>La contraseña es obligatoria.</small>
-          }
-        </div>
-      }
-    </div>
-    <br>
-
-    @if (loginError) {
-      <div class="error-msg backend-error">
-        <small>Credenciales incorrectas. Inténtalo de nuevo.</small>
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+      
+      <div>
+        <input type="email" formControlName="email" placeholder="Email">
+        @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+          <div class="error-msg">
+            @if (loginForm.get('email')?.errors?.['required']) {
+              <small>El correo es obligatorio.</small>
+            }
+            @if (loginForm.get('email')?.errors?.['email']) {
+              <small>Debe ser un correo válido.</small>
+            }
+          </div>
+        }
       </div>
       <br>
+      
+      <div>
+        <input type="password" formControlName="password" placeholder="Contraseña">
+        @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+          <div class="error-msg">
+            @if (loginForm.get('password')?.errors?.['required']) {
+              <small>La contraseña es obligatoria.</small>
+            }
+          </div>
+        }
+      </div>
+      <br>
+
+      @if (loginError) {
+        <div class="error-msg backend-error">
+          <small>Credenciales incorrectas. Inténtalo de nuevo.</small>
+        </div>
+        <br>
+      }
+      
+      <button type="submit" [disabled]="isLoading">
+        @if (isLoading) {
+          <span class="spinner"></span> Entrando...
+        } @else {
+          Entrar
+        }
+      </button>
+    </form>
+
+    @if (token()) {
+      <div class="token-success">
+        <h3>¡Token recibido con éxito!</h3>
+        <p class="token-text">{{ token() }}</p>
+      </div>
+    } @else {
+      <p>Por favor, introduce tus credenciales para obtener el token.</p>
     }
     
-    <button type="submit" [disabled]="isLoading">
-      @if (isLoading) {
-        <span class="spinner"></span> Entrando...
-      } @else {
-        Entrar
-      }
-    </button>
-  </form>
-
-  @if (token()) {
-    <div class="token-success">
-      <h3>¡Token recibido con éxito!</h3>
-      <p class="token-text">{{ token() }}</p>
-    </div>
-  } @else {
-    <p>Por favor, introduce tus credenciales para obtener el token.</p>
-  }
-  
-  <p class="login-link">
-    ¿No tienes cuenta? <a routerLink="/register">Regístrate aquí</a>
-  </p>
+    <p class="login-link">
+      ¿No tienes cuenta? <a routerLink="/register">Regístrate aquí</a>
+    </p>
+  </div>
 </div>
