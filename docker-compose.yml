@@ -1,5 +1,5 @@
 services:
-  # Base de Datos (MySQL) - Requisito de persistencia y gestión de datos 
+  # Base de Datos (MySQL)
   db:
     image: mysql:8.0
     container_name: xuxe-db
@@ -14,7 +14,7 @@ services:
     networks:
       - xuxe-network
 
-  # Backend (Laravel) - Gestión del servidor y API REST 
+  # Backend (Laravel)
   backend:
     build:
       context: ./backend
@@ -29,10 +29,9 @@ services:
       - db
     networks:
       - xuxe-network
-    # Comando para iniciar el servidor de desarrollo de Laravel 
     command: php artisan serve --host=0.0.0.0 --port=8000
 
-  # Frontend (Angular) - Interfaz dinámica del usuario 
+  # Frontend (Angular) - CORREGIDO
   frontend:
     image: node:20
     container_name: xuxe-frontend
@@ -44,10 +43,17 @@ services:
       - ./frontend:/app
     networks:
       - xuxe-network
-    # Comando para iniciar servidor de angular
-    command: npx ng serve --host 0.0.0.0 --port 4201
+    command: >
+      sh -c "
+        if [ ! -d node_modules ]; then
+          echo 'Instalando dependencias...' &&
+          npm install
+        fi &&
+        echo 'Iniciando servidor Angular...' &&
+        npx ng serve --host 0.0.0.0 --port 4201
+      "
 
-# Definición de la red interna y volúmenes para persistencia 
+# Red y volúmenes
 networks:
   xuxe-network:
     driver: bridge

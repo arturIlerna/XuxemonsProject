@@ -1,51 +1,93 @@
 <div class="profile-container">
-  <h2>Información de Usuario 🎮</h2>
-  
-  @if (user) {
-    <form [formGroup]="profileForm" (ngSubmit)="onUpdateProfile()" class="profile-form">
-      
-      <div class="form-group">
-        <label>Nombre:</label>
-        <input type="text" formControlName="name">
-        @if (profileForm.get('name')?.invalid && profileForm.get('name')?.touched) {
-          <small class="error-text">El nombre es obligatorio.</small>
-        }
+  <div class="profile-card">
+    <!-- Header simple -->
+    <div class="profile-header">
+      <div class="avatar">
+        <span>👤</span>
       </div>
-
-      <div class="form-group">
-        <label>Apellidos:</label>
-        <input type="text" formControlName="lastname">
-        @if (profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched) {
-          <small class="error-text">El apellido es obligatorio.</small>
-        }
-      </div>
-
-      <div class="form-group">
-        <label>Email:</label>
-        <input type="email" formControlName="email">
-        @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) {
-          <small class="error-text">Introduce un email válido (ej: hola@xuxedex.com).</small>
-        }
-      </div>
-
-      <div class="form-group">
-        <label>Nueva Contraseña (Opcional):</label>
-        <input type="password" formControlName="password" placeholder="Dejar en blanco para no cambiar">
-        @if (profileForm.get('password')?.invalid && profileForm.get('password')?.touched) {
-          <small class="error-text">La contraseña debe tener al menos 6 caracteres.</small>
-        }
-      </div>
-
-      <button type="submit" class="btn-save" [disabled]="profileForm.invalid">Guardar Cambios</button>
-    </form>
-
-    <hr style="margin: 30px 0; border: 0; border-top: 1px solid #e5e7eb;">
-
-    <div class="profile-actions">
-      <button routerLink="/dashboard" class="btn-back">Volver al Dashboard</button>
-      <button (click)="onDeleteAccount()" class="btn-danger">Darse de Baja</button>
+      <h2>Mi Perfil</h2>
+      <p class="text-muted">Gestiona tu información personal</p>
     </div>
-  } @else {
-    <p>Cargando información...</p>
-  }
+
+    @if (user) {
+      <form [formGroup]="profileForm" (ngSubmit)="onUpdateProfile()" class="profile-form">
+        
+        <!-- Nombre -->
+        <div class="form-group">
+          <label>Nombre</label>
+          <input 
+            type="text" 
+            formControlName="name" 
+            [class.error]="profileForm.get('name')?.invalid && profileForm.get('name')?.touched"
+            placeholder="Tu nombre"
+          >
+          @if (profileForm.get('name')?.invalid && profileForm.get('name')?.touched) {
+            <small class="error-text">El nombre es obligatorio</small>
+          }
+        </div>
+
+        <!-- Apellidos -->
+        <div class="form-group">
+          <label>Apellidos</label>
+          <input 
+            type="text" 
+            formControlName="lastname"
+            [class.error]="profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched"
+            placeholder="Tus apellidos"
+          >
+          @if (profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched) {
+            <small class="error-text">El apellido es obligatorio</small>
+          }
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label>Email</label>
+          <input 
+            type="email" 
+            formControlName="email"
+            [class.error]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+            placeholder="tu@email.com"
+          >
+          @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) {
+            <small class="error-text">Email inválido (ej: nombre@dominio.com)</small>
+          }
+        </div>
+
+        <!-- Contraseña -->
+        <div class="form-group">
+          <label>Nueva Contraseña <span class="optional">(opcional)</span></label>
+          <input 
+            type="password" 
+            formControlName="password"
+            [class.error]="profileForm.get('password')?.invalid && profileForm.get('password')?.touched"
+            placeholder="Mínimo 6 caracteres"
+          >
+          @if (profileForm.get('password')?.invalid && profileForm.get('password')?.touched) {
+            <small class="error-text">La contraseña debe tener al menos 6 caracteres</small>
+          }
+        </div>
+
+        <!-- Botón guardar -->
+        <button type="submit" class="btn-save" [disabled]="profileForm.invalid">
+          Guardar Cambios
+        </button>
+      </form>
+
+      <!-- Acciones -->
+      <div class="profile-actions">
+        <button routerLink="/dashboard" class="btn-back">
+          ← Volver al Dashboard
+        </button>
+        <button (click)="onDeleteAccount()" class="btn-danger">
+          Darse de Baja
+        </button>
+      </div>
+
+    } @else {
+      <div class="loading">
+        <p>Cargando información...</p>
+      </div>
+    }
+  </div>
 </div>

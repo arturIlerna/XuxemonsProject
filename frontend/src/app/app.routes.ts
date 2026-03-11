@@ -3,7 +3,8 @@ import { Login } from './components/login/login';
 import { Dashboard } from './components/dashboard/dashboard';
 import { Register } from './components/register/register';
 import { Profile } from './components/profile/profile';
-import { authGuard } from './guards/auth.guard'; // Import del guard
+import { Xuxedex } from './components/xuxedex/xuxedex'; 
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -11,12 +12,17 @@ export const routes: Routes = [
   { 
     path: 'dashboard', 
     component: Dashboard, 
-    canActivate: [authGuard] // Ruta protegida
+    canActivate: [authGuard]
   },
   { 
-    path: 'profile', // Ruta protegida
+    path: 'profile',
     component: Profile, 
     canActivate: [authGuard] 
+  },
+  { 
+    path: 'xuxedex',                    
+    component: Xuxedex,
+    canActivate: [authGuard]           
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];

@@ -1,51 +1,206 @@
-.profile-form {
-  text-align: left;
-  background-color: #f9fafb;
+/* =========================================
+   CONTENEDOR PRINCIPAL
+   ========================================= */
+.profile-container {
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 20px;
-  border-radius: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* =========================================
+   TARJETA DE PERFIL
+   ========================================= */
+.profile-card {
+  max-width: 500px;
+  width: 100%;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+/* =========================================
+   HEADER
+   ========================================= */
+.profile-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  background-color: #e3f2fd;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+}
+
+.avatar span {
+  font-size: 40px;
+}
+
+.profile-header h2 {
+  color: #1a1a1a;
+  font-size: 24px;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.text-muted {
+  color: #666;
+  font-size: 14px;
+}
+
+/* =========================================
+   FORMULARIO
+   ========================================= */
+.profile-form {
   margin-bottom: 20px;
 }
 
 .form-group {
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 20px;
 }
 
 .form-group label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #374151;
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
 }
 
 .form-group input {
-  padding: 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  font-size: 16px;
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s;
+  box-sizing: border-box;
 }
 
-/* Bordes rojos si el input es inválido y ha sido tocado */
-.form-group input.ng-invalid.ng-touched {
-  border-color: #ef4444;
-  background-color: #fef2f2;
+.form-group input:focus {
+  outline: none;
+  border-color: #2196f3;
+  background-color: #f8f9fa;
+}
+
+.form-group input.error {
+  border-color: #dc3545;
+  background-color: #fff5f5;
+}
+
+.optional {
+  color: #999;
+  font-size: 12px;
+  font-weight: normal;
+  margin-left: 5px;
 }
 
 .error-text {
-  color: #ef4444;
+  display: block;
+  color: #dc3545;
   font-size: 12px;
   margin-top: 5px;
 }
 
+/* =========================================
+   BOTONES
+   ========================================= */
 .btn-save {
-  background-color: #10b981; /* Verde */
-  color: white;
   width: 100%;
-  padding: 12px;
-  margin-top: 10px;
+  padding: 14px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-save:hover:not(:disabled) {
+  background-color: #1976d2;
 }
 
 .btn-save:disabled {
-  background-color: #9ca3af;
+  background-color: #b0bec5;
   cursor: not-allowed;
+}
+
+/* =========================================
+   ACCIONES
+   ========================================= */
+.profile-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.btn-back, .btn-danger {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  text-align: center;
+}
+
+.btn-back {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.btn-back:hover {
+  background-color: #d0d0d0;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+/* =========================================
+   LOADING
+   ========================================= */
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+@media (max-width: 480px) {
+  .profile-card {
+    padding: 20px;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+  }
+
+  .profile-header h2 {
+    font-size: 20px;
+  }
 }

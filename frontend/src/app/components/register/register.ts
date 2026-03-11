@@ -61,7 +61,7 @@ export class Register implements OnInit {
           console.log('Registro exitoso para:', res?.user?.name || 'usuario');
           this.isLoading = false; // APAGAMOS (aunque cambie de página)
           // Vamos directos al dashboard 
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/login']);
         },
         error: (err) => {
           console.error('Error en el registro:', err);
