@@ -1,15 +1,90 @@
-<div class="dashboard-container">
+<div class="dashboard-wrapper">
+  <!-- Header superior -->
   <header class="dashboard-header">
-    <h2>¡Bienvenido a la Xuxedex, {{ userName }}! 🚀</h2>
-    
-    <div class="header-buttons">
-      <button routerLink="/profile" class="btn-profile">Mi Perfil</button>
+    <div class="header-content">
+      <div class="logo-section">
+        <h1>XUXEMONS</h1>
+      </div>
       
-      <button (click)="onLogout()" class="btn-logout">Cerrar Sesión</button>
+      <div class="user-section">
+        <span class="username">{{ userName }}</span>
+        <button (click)="onLogout()" class="btn-logout">Cerrar Sesión</button>
+      </div>
     </div>
   </header>
 
-  <main style="margin-top: 50px;">
-    <p>Aquí irán tus Xuxemons muy pronto...</p>
-  </main>
+  <!-- Contenedor principal con dos columnas -->
+  <div class="main-container">
+    <!-- Barra lateral izquierda - Menú de navegación -->
+    <aside class="sidebar">
+      <nav class="nav-menu">
+        <a routerLink="/backpack" class="nav-item" routerLinkActive="active">
+          <span class="nav-icon">🎒</span>
+          Mochila
+        </a>
+        <a routerLink="/xuxedex" class="nav-item" routerLinkActive="active">
+          <span class="nav-icon">📱</span>
+          Xuxedex
+        </a>
+        <a routerLink="/battle" class="nav-item" routerLinkActive="active">
+          <span class="nav-icon">⚔️</span>
+          Batalla
+        </a>
+        <a routerLink="/profile" class="nav-item" routerLinkActive="active">
+          <span class="nav-icon">👤</span>
+          Perfil
+        </a>
+        <a routerLink="/chat" class="nav-item" routerLinkActive="active">
+          <span class="nav-icon">💬</span>
+          Chat
+        </a>
+        <a routerLink="/friends" class="nav-item" routerLinkActive="active">
+          <span class="nav-icon">👥</span>
+          Amigos
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Contenido principal - Área del Xuxemon -->
+    <main class="content-area">
+      <!-- Stats del jugador -->
+      <div class="player-stats">
+        <div class="stat-item">
+          <span class="stat-label">Caramelo</span>
+          <span class="stat-value caramel">1254</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Nivel</span>
+          <span class="stat-value level">25</span>
+        </div>
+      </div>
+
+      <!-- Tarjeta del Xuxemon -->
+      <div class="xuxemon-card">
+        <h2 class="xuxemon-name">FLOPPI</h2>
+        
+        <div class="xuxemon-type">
+          <span class="type-badge ground">Tipo Tierra</span>
+        </div>
+
+        <!-- Imagen del Xuxemon (placeholder) -->
+        <div class="xuxemon-image">
+          <div class="image-placeholder">
+            <span>⚡</span>
+          </div>
+        </div>
+
+        <!-- Ataque especial -->
+        <div class="special-attack">
+          <h3>Ataque Especial</h3>
+          <div class="attack-card">
+            <span class="attack-name">Barrida de lodo</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mensaje de placeholder (opcional, si no hay datos) -->
+      <!-- <p>Aquí irán tus Xuxemons muy pronto...</p> -->
+    </main>
+  </div>
 </div>

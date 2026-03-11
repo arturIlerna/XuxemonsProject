@@ -1,0 +1,119 @@
+<div class="xuxedex-container">
+  <!-- Header -->
+  <header class="xuxedex-header">
+    <div class="header-content">
+      <h1>
+        <span class="header-icon">📱</span>
+        Xuxedex
+      </h1>
+      <div class="user-info">
+        <span>{{ userName }}</span>
+        <button (click)="goToDashboard()" class="btn-back">← Volver</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Barra de búsqueda -->
+  <div class="search-section">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        placeholder="Buscar Xuxemon..."
+        [(ngModel)]="searchTerm"
+        (input)="filterXuxemons()"
+      >
+    </div>
+    
+    <!-- Filtros -->
+    <div class="filter-tabs">
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedType === 'todos'"
+        (click)="filterByType('todos')"
+      >
+        Todos
+      </button>
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedType === 'tierra'"
+        (click)="filterByType('tierra')"
+      >
+        Tierra
+      </button>
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedType === 'fuego'"
+        (click)="filterByType('fuego')"
+      >
+        Fuego
+      </button>
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedType === 'agua'"
+        (click)="filterByType('agua')"
+      >
+        Agua
+      </button>
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedType === 'planta'"
+        (click)="filterByType('planta')"
+      >
+        Planta
+      </button>
+    </div>
+  </div>
+
+  <!-- Grid de Xuxemons -->
+  @if (filteredXuxemons.length > 0) {
+    <div class="xuxemons-grid">
+      @for (xuxemon of filteredXuxemons; track xuxemon.id) {
+        <div class="xuxemon-card" (click)="viewDetails(xuxemon)">
+          <div class="card-header" [style.background]="getTypeColor(xuxemon.type)">
+            <span class="xuxemon-id">#{{ xuxemon.id }}</span>
+            <span class="xuxemon-level">Nv. {{ xuxemon.level }}</span>
+          </div>
+          
+          <div class="card-image">
+            <div class="image-placeholder" [style.background]="getTypeGradient(xuxemon.type)">
+              <span>{{ xuxemon.icon }}</span>
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <h3 class="xuxemon-name">{{ xuxemon.name }}</h3>
+            <div class="xuxemon-type">
+              <span class="type-badge" [style.background]="getTypeColor(xuxemon.type)">
+                {{ xuxemon.type }}
+              </span>
+            </div>
+            
+            <div class="xuxemon-stats">
+              <div class="stat">
+                <span class="stat-label">⚔️ ATQ</span>
+                <span class="stat-value">{{ xuxemon.attack }}</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">🛡️ DEF</span>
+                <span class="stat-value">{{ xuxemon.defense }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-footer">
+            <span class="capture-status" [class.captured]="xuxemon.captured">
+              {{ xuxemon.captured ? '✓ Capturado' : '◯ No capturado' }}
+            </span>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="no-results">
+      <span class="no-results-icon">🔍</span>
+      <h3>No se encontraron Xuxemons</h3>
+      <p>Prueba con otra búsqueda</p>
+    </div>
+  }
+</div>

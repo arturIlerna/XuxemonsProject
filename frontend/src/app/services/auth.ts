@@ -14,7 +14,7 @@ export class Auth {
   // Función para enviar los datos al backend de Laravel
   login(credentials: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
-      tap((res) => { // logica para guardar el token y el usuario en el localStorage del navegador
+      tap((res) => {
         // Si Laravel nos devuelve el token
         if (res.access_token) {
           localStorage.setItem('token', res.access_token);
@@ -35,6 +35,11 @@ export class Auth {
         }
       })
     );
+  }
+
+  getUser() {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
   }
 
   // Función para saber si estamos logueados
