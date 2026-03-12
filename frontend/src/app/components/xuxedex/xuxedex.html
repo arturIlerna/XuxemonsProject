@@ -46,3 +46,17 @@
       </div>
     </section>
   }
+   <section class="filters-section" aria-label="Filtros de Xuxemons">
+    <h2 class="sr-only">Filtros disponibles</h2>
+    
+      <div class="search-box">
+      <label for="searchXuxemon" class="sr-only">Buscar por nombre</label>
+      <input 
+        id="searchXuxemon"
+        type="text" 
+        placeholder="Buscar Xuxemon por nombre..."
+        [(ngModel)]="searchTerm"
+        (input)="filterXuxemons()"
+        aria-label="Buscar Xuxemon por nombre"
+      >
+    </div>
