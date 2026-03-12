@@ -74,3 +74,18 @@
         }
       </div>
     </fieldset>
+    <fieldset class="filter-group">
+      <legend>Filtrar por tamaño:</legend>
+      <div class="filter-buttons">
+        @for (size of ['todas', 'Pequeño', 'Mediano', 'Grande']; track size) {
+          <button 
+            [class.active]="selectedSize === size"
+            (click)="filterBySize(size)"
+            [attr.aria-pressed]="selectedSize === size"
+          >
+            {{ size === 'todas' ? 'Todas' : size }}
+          </button>
+        }
+      </div>
+    </fieldset>
+  </section>
