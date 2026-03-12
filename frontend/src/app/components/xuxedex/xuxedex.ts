@@ -4,6 +4,18 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '../../services/auth';
 
+interface Xuxemon {
+  id: number; 
+  name: string;
+  type: 'Aigua' | 'Terra' | 'Aire'; 
+  size: 'Petit' | 'Mitjà' | 'Gran'; 
+  level: number;
+  attack: number;
+  defense: number;
+  icon: string;
+  captured: boolean;
+}
+
 @Component({
   selector: 'app-xuxedex',
   standalone: true,
