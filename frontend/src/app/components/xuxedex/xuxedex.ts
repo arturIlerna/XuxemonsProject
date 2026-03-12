@@ -37,6 +37,17 @@ export class Xuxedex implements OnInit {
     private router: Router,
     private xuxedexService: XuxedexService
   ) {}
-
+   ngOnInit() {
+    const user = this.authService.getUser();
+    this.userName = user?.name || 'Entrenador';
+    this.userId = user?.id || 0;
+    this.isAdmin = user?.role === 'admin';
+    
+    this.loadXuxemons();
+    
+    if (this.isAdmin) {
+      this.loadUsers();
+    }
+  }
   }
 
