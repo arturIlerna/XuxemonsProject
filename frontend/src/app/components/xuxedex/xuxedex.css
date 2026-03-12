@@ -291,4 +291,48 @@
     grid-template-columns: 1fr;
     padding: 0 1rem;
   }
+  .btn-random {
+  background-color: #9c27b0;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.btn-random:hover {
+  background-color: #7b1fa2;
+}
+
+.btn-evolve {
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.btn-evolve:hover:not(:disabled) {
+  background-color: #f57c00;
+}
+
+.btn-evolve:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.stats {
+  background-color: #e0e0e0;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
 }
