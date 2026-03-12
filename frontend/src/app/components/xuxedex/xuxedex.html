@@ -1,127 +1,13 @@
-<div class="xuxedex-container">
-  <!-- Header -->
-  <header class="xuxedex-header">
-    <div class="header-content">
-      <h1>
-        Xuxedex
-      </h1>
-      <div class="user-info">
-        <span>{{ userName }}</span>
-        <span class="stats">Total: {{ allXuxemons.length }} Xuxemons</span>
-        <button (click)="goToDashboard()" class="btn-back">← Volver</button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Barra de búsqueda y acciones -->
-  <div class="search-section">
-    <div class="search-box">
-      <input 
-        type="text" 
-        placeholder="Buscar Xuxemon..."
-        [(ngModel)]="searchTerm"
-        (input)="filterXuxemons()"
-      >
-    </div>
-    
-    <!-- Botón para añadir aleatorio -->
-    <button class="btn-random" (click)="addRandomXuxemon()">
-      + Añadir Xuxemon Aleatorio
-    </button>
-    
-    <!-- Filtros por tipo -->
-    <div class="filter-tabs">
-      <button 
-        class="filter-btn" 
-        [class.active]="selectedType === 'tots'"
-        (click)="filterByType('tots')"
-      >
-        Todos
-      </button>
-      <button 
-        class="filter-btn" 
-        [class.active]="selectedType === 'Terra'"
-        (click)="filterByType('Terra')"
-      >
-        Tierra
-      </button>
-      <button 
-        class="filter-btn" 
-        [class.active]="selectedType === 'Aigua'"
-        (click)="filterByType('Aigua')"
-      >
-        Agua
-      </button>
-      <button 
-        class="filter-btn" 
-        [class.active]="selectedType === 'Aire'"
-        (click)="filterByType('Aire')"
-      >
-        Aire
-      </button>
+<nav class="navbar">
+  <div class="nav-container">
+    <a routerLink="/dashboard" class="nav-brand">Xuxemons</a>
+    <ul class="nav-menu">
+      <li><a routerLink="/xuxedex" routerLinkActive="active">Xuxedex</a></li>
+      <li><a routerLink="/inventory" routerLinkActive="active">Motxilla</a></li>
+    </ul>
+    <div class="nav-user">
+      <span>{{ userName }}</span>
+      <button (click)="logout()" class="btn-logout">Cerrar sesión</button>
     </div>
   </div>
-
-  <!-- Grid de Xuxemons -->
-  @if (filteredXuxemons.length > 0) {
-    <div class="xuxemons-grid">
-      @for (xuxemon of filteredXuxemons; track xuxemon.id) {
-        <div class="xuxemon-card" (click)="viewDetails(xuxemon)">
-          <div class="card-header" [style.background]="getTypeColor(xuxemon.type)">
-            <span class="xuxemon-size">{{ getSizeText(xuxemon.size) }}</span>
-            <span class="xuxemon-level">Nivel {{ xuxemon.level }}</span>
-          </div>
-          
-          <div class="card-image">
-            <div class="image-placeholder" [style.background]="getTypeGradient(xuxemon.type)">
-              <span>{{ xuxemon.type.substring(0, 1) }}</span>
-            </div>
-          </div>
-          
-          <div class="card-body">
-            <h3 class="xuxemon-name">{{ xuxemon.name }}</h3>
-            <div class="xuxemon-type">
-              <span class="type-badge" [style.background]="getTypeColor(xuxemon.type)">
-                {{ xuxemon.type }}
-              </span>
-            </div>
-            
-            <div class="xuxemon-stats">
-              <div class="stat">
-                <span class="stat-label">ATAQUE</span>
-                <span class="stat-value">{{ xuxemon.attack }}</span>
-              </div>
-              <div class="stat">
-                <span class="stat-label">DEFENSA</span>
-                <span class="stat-value">{{ xuxemon.defense }}</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="card-footer">
-            <!-- Botón de evolución -->
-            <button class="btn-evolve" (click)="evolveSize(xuxemon, $event)" 
-                    [disabled]="xuxemon.size === 'Gran'">
-              Evolucionar 
-              @if(xuxemon.size === 'Petit') { → Mediano }
-              @if(xuxemon.size === 'Mitjà') { → Grande }
-              @if(xuxemon.size === 'Gran') { (Máximo) }
-            </button>
-            
-            <span class="capture-status" [class.captured]="xuxemon.captured">
-              {{ xuxemon.captured ? '✓ Capturado' : '◯ No capturado' }}
-            </span>
-          </div>
-        </div>
-      }
-    </div>
-  } @else {
-    <div class="no-results">
-      <h3>No se encuentran Xuxemons</h3>
-      <p>Prueba con otra búsqueda</p>
-      <button class="btn-random" (click)="addRandomXuxemon()">
-        + Añadir Xuxemon Aleatorio
-      </button>
-    </div>
-  }
-</div>
+</nav>
