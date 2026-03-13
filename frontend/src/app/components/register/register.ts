@@ -52,26 +52,35 @@ export class Register implements OnInit {
   // Angular controla los datos
   onRegister() {
     if (this.registerForm.valid) {
-
       this.isLoading = true; // ENCENDEMOS LA ANIMACIÓN
       
-      // Le pasamos a tu servicio TODOS los datos del formulario de golpe
-      this.authService.register(this.registerForm.value).subscribe({
+      // 1. Generamos un número aleatorio entre 0 y 9999, forzando que siempre tenga 4 cifras 
+      const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+      
+      // 2. Hacemos una copia de los datos del formulario para poder modificarlos
+      const finalData = { ...this.registerForm.value };
+      
+      // 3. Le pegamos el ID visual al nombre (ej: "Artur" pasa a ser "Artur#7421")
+      finalData.name = `${finalData.name}#${randomNum}`;
+      
+      // Le pasamos al servicio los datos YA MODIFICADOS con el ID
+      this.authService.register(finalData).subscribe({
         next: (res) => {
-          console.log('Registro exitoso para:', res?.user?.name || 'usuario');
-          this.isLoading = false; // APAGAMOS (aunque cambie de página)
-          // Vamos directos al dashboard 
+          // Mostramos una alerta bonita para que el usuario sepa cuál es su nuevo ID
+          alert(`¡Registro completado! Tu ID de entrenador es: ${finalData.name}`);
+          
+          this.isLoading = false; 
+          // Vamos directos al login 
           this.router.navigate(['/login']);
         },
         error: (err) => {
           console.error('Error en el registro:', err);
           alert('Fallo en el registro. Comprueba la consola.');
-          this.isLoading = false; // APAGAMOS SI HAY ERROR para que se pueda volver a intentar
+          this.isLoading = false; 
         }
       });
 
     } else {
-      // Si hay fallos de validación, forzamos a que salgan las alertas rojas en el HTML
       this.registerForm.markAllAsTouched();
     }
   }

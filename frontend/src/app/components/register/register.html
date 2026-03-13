@@ -6,6 +6,12 @@
       
       <div>
         <input type="text" formControlName="name" placeholder="Nombre">
+        
+        @if (registerForm.get('name')?.value) {
+          <small class="text-muted" style="display: block; margin-top: 5px; color: #555;">
+            Tu ID visual será: <strong>{{ registerForm.get('name')?.value }}#????</strong>
+          </small>
+        }
         @if (registerForm.get('name')?.invalid && registerForm.get('name')?.touched) {
           <div class="error-msg">
             @if (registerForm.get('name')?.errors?.['required']) {
