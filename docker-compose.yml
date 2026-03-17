@@ -43,7 +43,7 @@ services:
       - ./frontend:/app
     networks:
       - xuxe-network
-    command: >
+    command: 
       sh -c "
         if [ ! -d node_modules ]; then
           echo 'Instalando dependencias...' &&
