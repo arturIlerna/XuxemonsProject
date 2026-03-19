@@ -1,9 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '../../services/auth';
-// 👇 Importamos el nuevo servicio y la interfaz
 import { XuxemonsService, Xuxemon } from '../../services/xuxemons.service'; 
 import { Subscription } from 'rxjs';
 
@@ -34,7 +33,8 @@ export class Xuxedex implements OnInit, OnDestroy {
   constructor(
     private authService: Auth,
     private xuxemonsService: XuxemonsService, // Inyectamos el servicio
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef // Añadimos esto para obligar a Angular a redibujar
   ) {}
 
   ngOnInit() {
@@ -47,10 +47,22 @@ export class Xuxedex implements OnInit, OnDestroy {
       }
     });
 
-    // 2. Escuchamos a la radio de Xuxemons
-    this.xuxeSub = this.xuxemonsService.xuxemons$.subscribe(data => {
-      this.allXuxemons = data;
-      this.filterXuxemons(); // Aplicamos los filtros al recibir los datos
+    // 2. Escuchamos a la radio de Xuxemons (Ahora conectado a Laravel)
+    this.xuxeSub = this.authService.getAllXuxemons().subscribe({
+      next: (data: any) => {
+        // Filtro por si los datos vienen envueltos
+        if (Array.isArray(data)) {
+          this.allXuxemons = data;
+        } else if (data && data.data) {
+          this.allXuxemons = data.data;
+        } else {
+          this.allXuxemons = Object.values(data);
+        }
+        
+        this.filterXuxemons(); // Aplicamos los filtros al recibir los datos
+        this.cdr.detectChanges(); // Forzamos a que se pinte en pantalla
+      },
+      error: (err) => console.error('Error cargando Xuxemons:', err)
     });
   }
 

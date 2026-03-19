@@ -89,4 +89,9 @@ export class Auth {
   getAllUsers(): Observable<any> {
     return this.http.get(`${this.apiUrl}/users`);
   }
+
+  // Función para pedir los Xuxemons
+  getAllXuxemons(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/xuxemons`);
+  }
 }
