@@ -1,7 +1,7 @@
 .admin-container {
   min-height: 100vh;
-  background-color: #1e1e2f;
-  color: white;
+  background-color: #E6F0FA;
+  color: #1A2B3C;
   padding: 2rem;
   font-family: Arial, sans-serif;
 }
@@ -11,12 +11,12 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #CBD5E0;
   padding-bottom: 1rem;
 }
 
 .btn-back {
-  background-color: #f44336;
+  background-color: #4A90E2;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -26,10 +26,10 @@
 }
 
 .admin-card {
-  background-color: #2a2a40;
+  background-color: #FFFFFF;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   margin-bottom: 2rem;
 }
 
@@ -42,20 +42,20 @@
 .users-table th, .users-table td {
   padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid #E2E8F0;
 }
 
 .users-table th {
-  background-color: #3f3f5a;
-  color: #ccc;
+  background-color: #4A90E2;
+  color: white;
 }
 
 .users-table tr:hover {
-  background-color: #32324e;
+  background-color: #F7FAFC;
 }
 
 .role-badge {
-  background-color: #4caf50;
+  background-color: #48BB78;
   color: white;
   padding: 4px 8px;
   border-radius: 12px;
@@ -64,11 +64,11 @@
 }
 
 .role-badge.admin-role {
-  background-color: #ff9800;
+  background-color: #4A90E2;
 }
 
 .btn-action {
-  background-color: #2196F3;
+  background-color: #4A90E2;
   color: white;
   border: none;
   padding: 6px 10px;
@@ -78,6 +78,6 @@
   margin-right: 5px;
 }
 
-.btn-action:hover {
-  background-color: #0b7dda;
+.btn-action.delete {
+  background-color: #E53E3E;
 }
