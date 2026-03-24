@@ -94,4 +94,18 @@ export class Auth {
   getAllXuxemons(): Observable<any> {
     return this.http.get(`${this.apiUrl}/xuxemons`);
   }
+
+  // Dar un Xuxemon aleatorio
+  giveRandomXuxemon(userId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/admin/give-xuxemon`, { user_id: userId });
+  }
+
+  // Dar Chuches a un usuario
+  giveXuxes(userId: number, name: string, quantity: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/admin/give-xuxes`, {
+      user_id: userId,
+      name: name,
+      quantity: quantity
+    });
+  }
 }

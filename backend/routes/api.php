@@ -23,15 +23,7 @@ Route::middleware(['auth:api'])->group(function () {
     // Obtener mis datos de usuario logueado
     Route::get('/me', [AuthController::class, 'me']);
 
-    // Dashboard de bienvenida
-    Route::get('/dashboard', function () {
-        return response()->json([
-            'message' => 'Bienvenido al dashboard de Xuxedex',
-            'user' => auth()->user()
-        ]);
-    });
-
-    // Dashboard de bienvenida
+    // Dashboard de bienvenida (¡Solo UNA vez!)
     Route::get('/dashboard', function () {
         return response()->json([
             'message' => 'Bienvenido al dashboard de Xuxedex',
@@ -45,10 +37,9 @@ Route::middleware(['auth:api'])->group(function () {
     // Obtener catálogo global de Xuxemons
     Route::get('/xuxemons', [XuxemonController::class, 'index']);
 
-    // RUTAS DE ADMINISTRADOR
+    // --- RUTAS DE ADMINISTRADOR ---
     Route::post('/admin/give-xuxemon', [AdminController::class, 'giveRandomXuxemon']);
     Route::post('/admin/give-xuxes', [AdminController::class, 'giveXuxes']);
-
 });
 
 // Ruta de comprobación rápida

@@ -50,7 +50,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // Validar que entrada email y password
+        // Validar que entra email y password
         $credentials = $request->only('email', 'password');
 
         // Intentar autenticar: Si falla, devolvemos error 401
@@ -133,14 +133,5 @@ class AuthController extends Controller
             'message' => 'Perfil actualizado correctamente',
             'user' => $user
         ], 200);
-    }
-    // Función para obtener TODOS los usuarios (Para el Admin)
-    public function index()
-    {
-        // Cogemos todos los usuarios de la base de datos
-        $users = \App\Models\User::all();
-        
-        // Los enviamos a Angular en formato JSON
-        return response()->json($users, 200);
     }
 }

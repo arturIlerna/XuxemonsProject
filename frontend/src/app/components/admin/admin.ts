@@ -59,4 +59,51 @@ export class Admin implements OnInit {
   goBack() {
     this.router.navigate(['/dashboard']);
   }
+
+  // --- FUNCIONES DE LOS BOTONES ---
+
+  // Regalar Xuxemon
+  darXuxemon(user: UserData) {
+    if(confirm(`¿Seguro que quieres regalar un Xuxemon aleatorio a ${user.name}?`)) {
+      this.authService.giveRandomXuxemon(user.id).subscribe({
+        next: (res: any) => {
+          // El backend nos devuelve el nombre del bicho en res.xuxemon
+          alert(`¡Éxito! Le has regalado a ${user.name} un ${res.xuxemon} 🎁`);
+        },
+        error: (err) => {
+          console.error(err);
+          alert('❌ Error al regalar el Xuxemon. Comprueba la consola.');
+        }
+      });
+    }
+  }
+
+  // Regalar Chuches
+  darXuxes(user: UserData) {
+    // Le preguntamos al admin cuántas chuches quiere dar
+    const quantityStr = prompt(`¿Cuántas chuches quieres darle a ${user.name}?`);
+    
+    // Si cancela o lo deja vacío, no hacemos nada
+    if (!quantityStr) return; 
+
+    // Convertimos el texto a número
+    const quantity = parseInt(quantityStr, 10);
+    if (isNaN(quantity) || quantity <= 0) {
+      alert('⚠️ Por favor, introduce un número válido mayor que 0.');
+      return;
+    }
+
+    // Por defecto le vamos a dar "Chuche de Fresa" (puedes cambiarlo luego)
+    const itemName = "Chuche de Fresa";
+
+    this.authService.giveXuxes(user.id, itemName, quantity).subscribe({
+      next: (res: any) => {
+        alert(`¡Boom! 🍬 Has inyectado ${quantity} ${itemName} en la mochila de ${user.name}.`);
+      },
+      error: (err) => {
+        console.error(err);
+        alert('❌ Error al dar chuches. Comprueba la consola.');
+      }
+    });
+  }
 }
