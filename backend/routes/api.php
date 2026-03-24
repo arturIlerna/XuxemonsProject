@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\XuxemonController;
+use App\Http\Controllers\AdminController;
 
 // RUTAS PÚBLICAS (No necesitan Token) ---
 Route::post('/register', [AuthController::class, 'register']);
@@ -43,6 +44,10 @@ Route::middleware(['auth:api'])->group(function () {
 
     // Obtener catálogo global de Xuxemons
     Route::get('/xuxemons', [XuxemonController::class, 'index']);
+
+    // RUTAS DE ADMINISTRADOR
+    Route::post('/admin/give-xuxemon', [AdminController::class, 'giveRandomXuxemon']);
+    Route::post('/admin/give-xuxes', [AdminController::class, 'giveXuxes']);
 
 });
 
