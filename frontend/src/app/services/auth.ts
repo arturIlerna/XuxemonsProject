@@ -108,4 +108,9 @@ export class Auth {
       quantity: quantity
     });
   }
+  
+  // Obtener mi mochila real desde Laravel
+  getMyInventory(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/my-inventory`);
+  }
 }

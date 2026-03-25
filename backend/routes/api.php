@@ -37,9 +37,13 @@ Route::middleware(['auth:api'])->group(function () {
     // Obtener catálogo global de Xuxemons
     Route::get('/xuxemons', [XuxemonController::class, 'index']);
 
-    // --- RUTAS DE ADMINISTRADOR ---
+    // RUTAS DE ADMINISTRADOR 
     Route::post('/admin/give-xuxemon', [AdminController::class, 'giveRandomXuxemon']);
     Route::post('/admin/give-xuxes', [AdminController::class, 'giveXuxes']);
+
+    // XUXEDEX/MOCHILA PERSONAL 
+    Route::get('/my-xuxemons', [XuxemonController::class, 'myCollection']);
+    Route::get('/my-inventory', [\App\Http\Controllers\InventoryController::class, 'index']);
 });
 
 // Ruta de comprobación rápida
