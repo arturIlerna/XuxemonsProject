@@ -41,6 +41,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/admin/give-xuxemon', [AdminController::class, 'giveRandomXuxemon']);
     Route::post('/admin/give-xuxes', [AdminController::class, 'giveXuxes']);
 
+    // CRUD Global de Xuxemons
+    Route::post('/xuxemons', [XuxemonController::class, 'store']);
+    Route::put('/xuxemons/{id}', [XuxemonController::class, 'update']);
+    Route::delete('/xuxemons/{id}', [XuxemonController::class, 'destroy']);
+
     // XUXEDEX/MOCHILA PERSONAL 
     Route::get('/my-xuxemons', [XuxemonController::class, 'myCollection']);
     Route::get('/my-inventory', [\App\Http\Controllers\InventoryController::class, 'index']);
