@@ -1,33 +1,43 @@
-<table class="users-table">
-        <thead>
+<div class="admin-container">
+  <div class="admin-header">
+    <h2>Panel de Administración</h2>
+  </div>
+
+  <div class="admin-card">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre / ID Visual</th>
+          <th>Apellidos</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users; track user.id) {
           <tr>
-            <th>ID</th>
-            <th>Nombre / ID Visual</th>
-            <th>Apellidos</th> <th>Email</th>
-            <th>Rol</th>
-            <th>Acciones</th>
+            <td data-label="ID">{{ user.id }}</td>
+            <td data-label="Nombre"><strong>{{ user.xuxe_id || user.name }}</strong></td>
+            <td data-label="Apellidos">{{ user.lastname }}</td>
+            <td data-label="Email">{{ user.email }}</td>
+            <td data-label="Rol">
+              <span class="role-badge" [class.admin-role]="user.role === 'admin'">
+                {{ user.role }}
+              </span>
+            </td>
+            <td data-label="Acciones">
+              <button class="btn-action" (click)="darXuxes(user)">Dar Xuxes</button>
+              <button class="btn-action" (click)="darXuxemon(user)">Dar Xuxemon</button>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          @for (user of users; track user.id) {
-            <tr>
-              <td>{{ user.id }}</td>
-              <td><strong>{{ user.xuxe_id || user.name }}</strong></td>
-              <td>{{ user.lastname }}</td> <td>{{ user.email }}</td>
-              <td>
-                <span class="role-badge" [class.admin-role]="user.role === 'admin'">
-                  {{ user.role }}
-                </span>
-              </td>
-              <td>
-                <button class="btn-action" (click)="darXuxes(user)">Dar Xuxes</button>
-                <button class="btn-action" (click)="darXuxemon(user)">Dar Xuxemon</button>
-              </td>
-            </tr>
-          } @empty {
-            <tr>
-              <td colspan="6" style="text-align: center;">No hay usuarios registrados.</td>
-            </tr>
-          }
-        </tbody>
-      </table>
+        } @empty {
+          <tr>
+            <td colspan="6" style="text-align: center;">No hay usuarios registrados.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
