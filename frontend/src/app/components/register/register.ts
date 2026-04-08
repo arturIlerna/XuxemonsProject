@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core'; // <-- Añadido 'signal'
 import { Router, RouterLink } from '@angular/router'; 
 import { CommonModule } from '@angular/common'; 
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms'; 
@@ -14,9 +14,12 @@ import { Auth } from '../../services/auth';
 export class Register implements OnInit {
   
   registerForm!: FormGroup;
-  isLoading: boolean = false; // interruptor de carga
+  isLoading: boolean = false; 
 
-  // Añadimos FormBuilder junto a los serivces
+  // Variables reactivas (signals) para controlar el aviso final
+  public registeredId = signal<string | null>(null);
+  public showAviso = signal<boolean>(false);
+
   constructor(
     private fb: FormBuilder, 
     private authService: Auth, 
@@ -24,7 +27,6 @@ export class Register implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Definimos las reglas para TODOS los campos
     this.registerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       lastname: ['', [Validators.required, Validators.minLength(3)]], 
@@ -40,7 +42,6 @@ export class Register implements OnInit {
     });
   }
 
-  // Comprobación de que las contraseñas son iguales
   passwordsMatchValidator(control: AbstractControl) {
     const password = control.get('password')?.value;
     const confirmPassword = control.get('password_confirmation')?.value;
@@ -49,33 +50,24 @@ export class Register implements OnInit {
     return password === confirmPassword ? null : { mismatch: true };
   }
 
-  // Angular controla los datos
   onRegister() {
     if (this.registerForm.valid) {
-      this.isLoading = true; // ENCENDEMOS LA ANIMACIÓN
+      this.isLoading = true; 
       
-      // 1. Generamos un número aleatorio entre 0 y 9999, forzando que siempre tenga 4 cifras 
-      const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-      
-      // 2. Hacemos una copia de los datos del formulario para poder modificarlos
-      const finalData = { ...this.registerForm.value };
-      
-      // 3. Le pegamos el ID visual al nombre (ej: "Artur" pasa a ser "Artur#7421")
-      finalData.name = `${finalData.name}#${randomNum}`;
-      
-      // Le pasamos al servicio los datos YA MODIFICADOS con el ID
-      this.authService.register(finalData).subscribe({
+      // Enviamos el formulario limpio. Laravel se encarga de crear el #NomXXXX
+      this.authService.register(this.registerForm.value).subscribe({
         next: (res) => {
-          // Mostramos una alerta bonita para que el usuario sepa cuál es su nuevo ID
-          alert(`¡Registro completado! Tu ID de entrenador es: ${finalData.name}`);
-          
           this.isLoading = false; 
-          // Vamos directos al login 
-          this.router.navigate(['/login']);
+          
+          // 1. Guardamos el ID que nos devuelve Laravel
+          this.registeredId.set(res.user.xuxe_id); 
+          
+          // 2. Mostramos el modal de aviso (no redirigimos todavía)
+          this.showAviso.set(true); 
         },
         error: (err) => {
           console.error('Error en el registro:', err);
-          alert('Fallo en el registro. Comprueba la consola.');
+          alert('Fallo en el registro. Es posible que el email ya exista.');
           this.isLoading = false; 
         }
       });
@@ -83,5 +75,19 @@ export class Register implements OnInit {
     } else {
       this.registerForm.markAllAsTouched();
     }
+  }
+
+  // Función para el botón de copiar
+  copyId() {
+    const id = this.registeredId();
+    if (id) {
+      navigator.clipboard.writeText(id);
+      alert('¡ID copiado al portapapeles!');
+    }
+  }
+
+  // Función para ir al dashboard una vez guardado el ID
+  goToDashboard() {
+    this.router.navigate(['/dashboard']);
   }
 }
