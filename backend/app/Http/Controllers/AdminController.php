@@ -1,5 +1,5 @@
 <?php
-//clon 
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
