@@ -2,10 +2,10 @@
    NUEVO: RESET GLOBAL PARA FULLSCREEN TOTAL
    ========================================= */
 html, body {
-  margin: 0; /* Quitamos el margen por defecto del navegador */
-  padding: 0; /* Quitamos el relleno por defecto */
-  height: 100%; /* Aseguramos que ocupe todo el alto */
-  width: 100%; /* Aseguramos que ocupe todo el ancho */
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
 }
 
 /* =========================================
@@ -17,12 +17,11 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Aquí usamos tu nombre exacto de imagen */
   background-image: url('/images/login-registro.jpg'); 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.15); /* Oscurece un poco el fondo */
+  box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.15);
 }
 
 /* =========================================
@@ -34,34 +33,39 @@ html, body {
   padding: 30px;
   text-align: center;
   font-family: sans-serif;
-  
-  /* Mantengo el fondo muy transparente (35%) y el borde fino */
   background-color: rgba(255, 255, 255, 0.35); 
   backdrop-filter: blur(10px); 
   border-radius: 12px;
-  
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
   border: 1px solid rgba(255, 255, 255, 0.2); 
 }
 
-.login-link {
-  margin-top: 20px;
-  font-size: 0.9em;
+/* =========================================
+   COLOR DE LAS PALABRAS EN NEGRO
+   ========================================= */
+
+/* Título y textos dentro del login-container */
+.login-container h2,
+.login-container label,
+.login-container p,
+.login-container span,
+.login-container .login-link {
+  color: #000000 !important;
 }
 
+/* Links */
 .login-link a {
-  color: #2563eb;
+  color: #000000 !important;
   text-decoration: none;
   font-weight: bold;
 }
 
 .login-link a:hover {
   text-decoration: underline;
+  color: #333333 !important;
 }
 
-/* =========================================
-   ESTILOS DEL TOKEN
-   ========================================= */
+/* Estilos del token */
 .token-success {
   margin-top: 20px;
   padding: 15px;
@@ -72,8 +76,24 @@ html, body {
 
 .token-text {
   word-break: break-all;
-  color: #16a34a; 
+  color: #000000 !important;
   font-family: monospace;
+}
+
+/* Texto de errores */
+.error-msg small {
+  color: #000000 !important;
+  font-size: 0.85rem;
+  font-weight: bold;
+  display: block;
+  margin-top: 4px;
+  text-align: left;
+}
+
+.backend-error small {
+  text-align: center;
+  font-size: 0.95rem;
+  color: #000000 !important;
 }
 
 /* =========================================
@@ -86,6 +106,11 @@ input {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
+  color: #000000;
+}
+
+input::placeholder {
+  color: #666666;
 }
 
 button {
@@ -143,20 +168,6 @@ input.ng-invalid.ng-touched {
 
 input.ng-valid.ng-touched {
   border: 2px solid #00C851;
-}
-
-.error-msg small {
-  color: #ff4444;
-  font-size: 0.85rem;
-  font-weight: bold;
-  display: block;
-  margin-top: 4px;
-  text-align: left;
-}
-
-.backend-error small {
-  text-align: center;
-  font-size: 0.95rem;
 }
 
 /* =========================================

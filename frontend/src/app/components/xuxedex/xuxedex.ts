@@ -48,7 +48,7 @@ export class Xuxedex implements OnInit, OnDestroy {
     });
 
     // 2. Escuchamos a la radio de Xuxemons (Ahora conectado a Laravel)
-    this.xuxeSub = this.authService.getAllXuxemons().subscribe({
+    this.xuxeSub = this.authService.getMyXuxemons().subscribe({
       next: (data: any) => {
         // Filtro por si los datos vienen envueltos
         if (Array.isArray(data)) {
@@ -62,7 +62,7 @@ export class Xuxedex implements OnInit, OnDestroy {
         this.filterXuxemons(); // Aplicamos los filtros al recibir los datos
         this.cdr.detectChanges(); // Forzamos a que se pinte en pantalla
       },
-      error: (err) => console.error('Error cargando Xuxemons:', err)
+      error: (err) => console.error('Error cargando tus Xuxemons:', err)
     });
   }
 

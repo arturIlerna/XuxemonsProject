@@ -113,4 +113,10 @@ export class Auth {
   getMyInventory(): Observable<any> {
     return this.http.get(`${this.apiUrl}/my-inventory`);
   }
-}
+
+   getMyXuxemons(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/my-xuxemons`);
+  }
+} 
+
+
