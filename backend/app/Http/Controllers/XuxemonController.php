@@ -8,9 +8,7 @@ use Illuminate\Http\Request;
 
 class XuxemonController extends Controller
 {
-    // ==========================================
-    // 🌍 1. LECTURA Y FILTROS (Para todos)
-    // ==========================================
+    // LECTURA Y FILTROS 
     public function index(Request $request)
     {
         // Iniciamos la query

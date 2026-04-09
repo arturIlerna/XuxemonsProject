@@ -24,7 +24,7 @@
         type="text" 
         placeholder="Buscar Xuxemon por nombre..."
         [(ngModel)]="searchTerm"
-        (input)="filterXuxemons()"
+        (input)="applyLocalSearch()"
       >
     </div>
 
@@ -66,20 +66,20 @@
   @if (error) {
     <div class="error">
       {{ error }}
-      <button (click)="ngOnInit()">Reintentar</button>
+      <button (click)="loadXuxemonsFromBackend()">Reintentar</button>
     </div>
   }
 
-  @if (!loading && !error && filteredXuxemons.length === 0) {
+  @if (!loading && !error && allXuxemons.length === 0) {
     <div class="no-results">
       <p>No se encuentran Xuxemons con estos filtros</p>
     </div>
   }
 
-  @if (!loading && !error && filteredXuxemons.length > 0) {
+  @if (!loading && !error && allXuxemons.length > 0) {
     <section class="xuxedex-section">
       <div class="xuxemons-grid">
-        @for (xuxemon of filteredXuxemons; track xuxemon.id) {
+        @for (xuxemon of allXuxemons; track xuxemon.id) {
           <article class="xuxemon-card" (click)="viewDetails(xuxemon)">
             <header class="card-header" [style.background]="getTypeColor(xuxemon.type)">
               <span class="xuxemon-type-badge">{{ xuxemon.type }}</span>
