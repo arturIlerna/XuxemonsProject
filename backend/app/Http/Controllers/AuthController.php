@@ -50,8 +50,8 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // Validar que entra email y password
-        $credentials = $request->only('email', 'password');
+        // Validamos que entra xuxe_id y password
+        $credentials = $request->only('xuxe_id', 'password');
 
         // Intentar autenticar: Si falla, devolvemos error 401
         if (!$token = JWTAuth::attempt($credentials)){

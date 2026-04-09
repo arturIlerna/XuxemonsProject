@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Observable, BehaviorSubject, tap } from 'rxjs'; // <-- Importamos el BehaviorSubject
+import { Observable, BehaviorSubject, tap } from 'rxjs'; 
 
 @Injectable({
   providedIn: 'root',
@@ -90,9 +90,22 @@ export class Auth {
     return this.http.get(`${this.apiUrl}/users`);
   }
 
-  // Función para pedir los Xuxemons
-  getAllXuxemons(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/xuxemons`);
+ // Función para pedir los Xuxemons con filtros al backend
+  getAllXuxemons(type: string = 'todos', size: string = 'todas'): Observable<any> {
+    let params = new HttpParams();
+    
+    // Si el tipo no es "todos", lo añadimos a la URL
+    if (type !== 'todos') {
+      params = params.set('type', type);
+    }
+    
+    // Si el tamaño no es "todas", lo añadimos a la URL
+    if (size !== 'todas') {
+      params = params.set('size', size);
+    }
+
+    // Angular automáticamente construirá algo como: /xuxemons?type=Agua&size=Pequeño
+    return this.http.get(`${this.apiUrl}/xuxemons`, { params });
   }
 
   // Dar un Xuxemon aleatorio

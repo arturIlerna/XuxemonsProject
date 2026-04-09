@@ -69,7 +69,10 @@
       </form>
 
       <div class="profile-actions">
-        <button (click)="onDeleteAccount()" class="btn-danger">
+        <button routerLink="/dashboard" class="btn-back">
+          ← Volver al Dashboard
+        </button>
+        <button type="button" (click)="triggerDelete()" class="btn-danger">
           Darse de Baja
         </button>
       </div>
@@ -81,3 +84,22 @@
     }
   </div>
 </div>
+
+@if (showDeleteModal()) {
+  <div class="modal-overlay">
+    <div class="modal-box delete-box">
+      <h3>⚠️ Eliminar Cuenta</h3>
+      <p>¿Estás completamente seguro de que quieres darte de baja?</p>
+      <p class="warning-text">Esta acción es <strong>irreversible</strong> y perderás todos tus Xuxemons y tu progreso.</p>
+      
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" (click)="cancelDelete()">
+          Cancelar
+        </button>
+        <button type="button" class="btn-danger-confirm" (click)="confirmDelete()">
+          Sí, eliminar mi cuenta
+        </button>
+      </div>
+    </div>
+  </div>
+}

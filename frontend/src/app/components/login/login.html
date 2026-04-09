@@ -5,14 +5,12 @@
     <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
       
       <div>
-        <input type="email" formControlName="email" placeholder="Email">
-        @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+        <input type="text" formControlName="xuxe_id" placeholder="ID de Usuario (ej. #Nom1234)">
+        
+        @if (loginForm.get('xuxe_id')?.invalid && loginForm.get('xuxe_id')?.touched) {
           <div class="error-msg">
-            @if (loginForm.get('email')?.errors?.['required']) {
-              <small>El correo es obligatorio.</small>
-            }
-            @if (loginForm.get('email')?.errors?.['email']) {
-              <small>Debe ser un correo válido.</small>
+            @if (loginForm.get('xuxe_id')?.errors?.['required']) {
+              <small>El ID de usuario es obligatorio.</small>
             }
           </div>
         }

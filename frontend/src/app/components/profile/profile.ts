@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core'; // <-- Importamos signal
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../services/auth';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -12,16 +12,18 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 })
 export class Profile implements OnInit {
   public user: any = null;
-  public profileForm!: FormGroup; // Guardamos el formulario
+  public profileForm!: FormGroup; 
+
+  // 1. Señal para controlar la visibilidad del modal
+  public showDeleteModal = signal<boolean>(false);
 
   constructor(
     private authService: Auth, 
     private router: Router,
-    private fb: FormBuilder // Creamos el constructor
+    private fb: FormBuilder 
   ) {}
 
   ngOnInit() {
-    // Creamos la estructura y las validaciones 
     this.profileForm = this.fb.group({
       name: ['', Validators.required],
       lastname: ['', Validators.required],
@@ -29,12 +31,9 @@ export class Profile implements OnInit {
       password: ['', [Validators.minLength(6)]] 
     });
 
-    // Nos suscribimos al BehaviorSubjec
     this.authService.currentUser$.subscribe(user => {
       if (user) {
         this.user = user;
-        
-        // patchValue rellena los inputs automáticamente
         this.profileForm.patchValue({
           name: this.user.name,
           lastname: this.user.lastname || '', 
@@ -44,7 +43,6 @@ export class Profile implements OnInit {
     });
   }
 
-  // Función para guardar los cambios
   onUpdateProfile() {
     if (this.profileForm.invalid) {
       alert('⚠️ Por favor, corrige los errores en rojo antes de guardar.');
@@ -53,18 +51,11 @@ export class Profile implements OnInit {
 
     const updatedData = this.profileForm.value;
 
-    // Enviamos los datos al backend
     this.authService.updateProfile(this.user.id, updatedData).subscribe({
       next: (res) => {
         alert('¡Perfil actualizado con éxito! 🎉');
-        
-        // Actualizamos nuestra variable local
         this.user = res.user;
-        
-        // Guardamos los nuevos datos en el localStorage para que el saludo del Dashboard se actualice
         localStorage.setItem('user', JSON.stringify(res.user));
-        
-        // Vaciamos el campo de la contraseña por seguridad
         this.profileForm.get('password')?.reset('');
       },
       error: (err) => {
@@ -74,10 +65,21 @@ export class Profile implements OnInit {
     });
   }
 
-  // Funcion de baja/borrado
-  onDeleteAccount() {
-    const isConfirmed = confirm('⚠️ ¿Estás seguro de que quieres darte de baja? Perderás tu cuenta.');
-    if (isConfirmed && this.user) {
+  // --- NUEVAS FUNCIONES PARA EL MODAL DE BORRADO ---
+
+  // 2. Abre el modal
+  triggerDelete() {
+    this.showDeleteModal.set(true);
+  }
+
+  // 3. Cierra el modal si el usuario se arrepiente
+  cancelDelete() {
+    this.showDeleteModal.set(false);
+  }
+
+  // 4. Ejecuta el borrado real si el usuario confirma
+  confirmDelete() {
+    if (this.user) {
       this.authService.deleteAccount(this.user.id).subscribe({
         next: (res) => {
           alert('Cuenta eliminada correctamente. ¡Una pena verte partir!');
@@ -87,6 +89,7 @@ export class Profile implements OnInit {
         error: (err) => {
           console.error('Error al dar de baja:', err);
           alert('Hubo un problema al eliminar la cuenta. Inténtalo de nuevo más tarde.');
+          this.showDeleteModal.set(false); // Escondemos el modal si hay error
         }
       });
     }

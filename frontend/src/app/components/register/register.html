@@ -9,7 +9,7 @@
         
         @if (registerForm.get('name')?.value) {
           <small class="text-muted" style="display: block; margin-top: 5px; color: #555;">
-            Tu ID visual será: <strong>{{ registerForm.get('name')?.value }}#????</strong>
+            Tu ID visual será: #<strong>{{ registerForm.get('name')?.value }}????</strong>
           </small>
         }
         @if (registerForm.get('name')?.invalid && registerForm.get('name')?.touched) {
@@ -105,3 +105,23 @@
     </p>
   </div>
 </div>
+
+@if (showAviso()) {
+  <div class="modal-overlay">
+    <div class="modal-box">
+      <h3>¡Bienvenido Entrenador! 🎉</h3>
+      <p>Tu cuenta se ha creado correctamente. Para iniciar sesión necesitarás tu ID único:</p>
+      
+      <div class="id-container">
+        <h2>{{ registeredId() }}</h2>
+        <button type="button" (click)="copyId()" class="btn-copy">📋 Copiar ID</button>
+      </div>
+
+      <p><small>Por favor, cópialo o guárdalo en un lugar seguro.</small></p>
+      
+      <button type="button" (click)="goToDashboard()" class="btn-primary">
+        Entrar al Dashboard
+      </button>
+    </div>
+  </div>
+}
