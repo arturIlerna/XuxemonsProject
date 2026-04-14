@@ -7,10 +7,18 @@ use App\Models\User;
 use App\Models\Xuxemon;
 use App\Models\UserXuxemon;
 use App\Models\UserItem;
+use App\Models\Item; 
 
 class AdminController extends Controller
 {
-    // 1. Dar un Xuxemon Aleatorio a un jugador
+    // Obtenemos el catálogo global de Chuches
+    public function getItems()
+    {
+        // Devuelve las 3 chuches que creamos en el Seeder
+        return response()->json(Item::all(), 200);
+    }
+
+    // Dar un Xuxemon Aleatorio a un jugador
     public function giveRandomXuxemon(Request $request)
     {
         // Validamos que nos envíen el ID del jugador
@@ -32,12 +40,12 @@ class AdminController extends Controller
         ], 200);
     }
 
-    // 2. Dar cantidad de Chuches a un jugador
+    // Dar cantidad de Chuches a un jugador 
     public function giveXuxes(Request $request)
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'name' => 'required|string', // ej: "Chuche de Fresa"
+            'name' => 'required|string', 
             'quantity' => 'required|integer|min:1'
         ]);
 
@@ -45,7 +53,7 @@ class AdminController extends Controller
         $name = $request->name;
         $quantityToGive = $request->quantity;
 
-        // FASE 1: Rellenar huecos que ya existan y tengan menos de 5 chuches
+        // Rellenar huecos que ya existan y tengan menos de 5 chuches
         $existingSlots = UserItem::where('user_id', $userId)
             ->where('name', $name)
             ->where('type', 'apilable')
@@ -67,7 +75,7 @@ class AdminController extends Controller
             }
         }
 
-        // FASE 2: Si sobran chuches, buscar huecos nuevos (Máximo 20 slots)
+        // Si sobran chuches, buscar huecos nuevos (Máximo 20 slots)
         if ($quantityToGive > 0) {
             // Sacamos un array con los números de los huecos ocupados (ej: [1, 2, 5])
             $occupiedSlots = UserItem::where('user_id', $userId)->pluck('slot')->toArray();
@@ -93,7 +101,20 @@ class AdminController extends Controller
             }
         }
 
-        // Si después de todo sobra $quantityToGive, se descarta (como dice la rúbrica)
-        return response()->json(['message' => '¡Chuches inyectadas en la mochila!'], 200);
+        // GESTIÓN DEL MENSAJE FINAL (Con o sin descartes) 
+        // Si después de todo sobra $quantityToGive, significa que se han tirado a la basura
+        $discarded = $quantityToGive > 0;
+        
+        if ($discarded) {
+            return response()->json([
+                'message' => "Se han guardado las posibles, pero se han descartado $quantityToGive chuches por falta de espacio en la mochila.",
+                'discarded' => true
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => '¡Todas las chuches inyectadas en la mochila correctamente!',
+            'discarded' => false
+        ], 200);
     }
 }

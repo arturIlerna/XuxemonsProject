@@ -130,6 +130,10 @@ export class Auth {
    getMyXuxemons(): Observable<any> {
     return this.http.get(`${this.apiUrl}/my-xuxemons`);
   }
+
+  getItems(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/items`);
+  }
 } 
 
 

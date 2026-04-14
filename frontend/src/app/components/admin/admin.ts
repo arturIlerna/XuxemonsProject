@@ -1,9 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // cdr para mostrar definitivamente los puñeteros usuarios :)
+import { Component, OnInit, ChangeDetectorRef, signal } from '@angular/core'; // Añadido signal
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // <-- MUY IMPORTANTE AÑADIR ESTO para los ngModel
 import { Router } from '@angular/router';
 import { Auth } from '../../services/auth'; 
 
-// Actualizamos la interfaz para que coincida con tu base de datos
 export interface UserData {
   id: number;
   name: string;
@@ -16,15 +16,23 @@ export interface UserData {
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule], // <-- NO OLVIDAR FormsModule
   templateUrl: './admin.html',
   styleUrl: './admin.css'
 })
 export class Admin implements OnInit {
   
   users: UserData[] = [];
+  availableItems: any[] = []; // Nuestro catálogo real de chuches de Laravel
+  
+  // Variables para la selección global del admin
+  selectedItemName: string = '';
+  selectedQuantity: number = 1;
 
-  // Añadimos el cdr (porque no mostraba la puñetera lista de usuarios y con esto actualizamos de nuevo) al constructor y el auth
+  // Señales para el modal de advertencia de Mochila Llena
+  public showWarningModal = signal<boolean>(false);
+  public warningMessage = signal<string>('');
+
   constructor(
     private router: Router, 
     private authService: Auth,
@@ -32,9 +40,13 @@ export class Admin implements OnInit {
   ) {}
   
   ngOnInit() {
+    this.loadUsers();
+    this.loadItems(); // Cargamos el catálogo de chuches
+  }
+
+  loadUsers() {
     this.authService.getAllUsers().subscribe({
       next: (data: any) => {
-        // Tu filtro actual...
         if (Array.isArray(data)) {
           this.users = data;
         } else if (data && data.data) {
@@ -46,12 +58,26 @@ export class Admin implements OnInit {
         }
 
         console.log('✅ ARRAY FINAL PARA EL HTML:', this.users);
-
-        // Obligamos a Angular a pintar la santa tabla de usuarios
         this.cdr.detectChanges(); 
       },
       error: (err) => {
         console.error('❌ Error al cargar usuarios:', err);
+      }
+    });
+  }
+
+  // --- NUEVO: Cargar el catálogo de Chuches ---
+  loadItems() {
+    this.authService.getItems().subscribe({
+      next: (items: any[]) => {
+        this.availableItems = items;
+        // Seleccionamos la primera por defecto si existen
+        if (items.length > 0) {
+          this.selectedItemName = items[0].name;
+        }
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar el catálogo de chuches:', err);
       }
     });
   }
@@ -67,7 +93,6 @@ export class Admin implements OnInit {
     if(confirm(`¿Seguro que quieres regalar un Xuxemon aleatorio a ${user.name}?`)) {
       this.authService.giveRandomXuxemon(user.id).subscribe({
         next: (res: any) => {
-          // El backend nos devuelve el nombre del bicho en res.xuxemon
           alert(`¡Éxito! Le has regalado a ${user.name} un ${res.xuxemon} 🎁`);
         },
         error: (err) => {
@@ -78,32 +103,40 @@ export class Admin implements OnInit {
     }
   }
 
-  // Regalar Chuches
+  // Regalar Chuches (Actualizado)
   darXuxes(user: UserData) {
-    // Le preguntamos al admin cuántas chuches quiere dar
-    const quantityStr = prompt(`¿Cuántas chuches quieres darle a ${user.name}?`);
+    // Validaciones previas
+    if (!this.selectedItemName) {
+      alert('⚠️ Por favor, selecciona una chuche del catálogo arriba.');
+      return;
+    }
     
-    // Si cancela o lo deja vacío, no hacemos nada
-    if (!quantityStr) return; 
-
-    // Convertimos el texto a número
-    const quantity = parseInt(quantityStr, 10);
-    if (isNaN(quantity) || quantity <= 0) {
+    if (this.selectedQuantity <= 0) {
       alert('⚠️ Por favor, introduce un número válido mayor que 0.');
       return;
     }
 
-    // Por defecto le vamos a dar "Chuche de Fresa" (puedes cambiarlo luego)
-    const itemName = "Chuche de Fresa";
-
-    this.authService.giveXuxes(user.id, itemName, quantity).subscribe({
+    // Ya no usamos prompt(), cogemos los datos del menú superior que hemos creado
+    this.authService.giveXuxes(user.id, this.selectedItemName, this.selectedQuantity).subscribe({
       next: (res: any) => {
-        alert(`¡Boom! 🍬 Has inyectado ${quantity} ${itemName} en la mochila de ${user.name}.`);
+        if (res.discarded) {
+          // Si Laravel nos chiva que se han tirado chuches a la basura, abrimos el Modal Rojo
+          this.warningMessage.set(res.message);
+          this.showWarningModal.set(true);
+        } else {
+          // Si ha cabido todo, damos el OK genérico
+          alert(`¡Boom! 🍬 ${res.message}`);
+        }
       },
       error: (err) => {
         console.error(err);
         alert('❌ Error al dar chuches. Comprueba la consola.');
       }
     });
+  }
+
+  // Cerrar el Modal de Advertencia
+  closeWarning() {
+    this.showWarningModal.set(false);
   }
 }

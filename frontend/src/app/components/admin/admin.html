@@ -3,6 +3,25 @@
     <h2>Panel de Administración</h2>
   </div>
 
+  <div class="admin-controls-card">
+    <h3>🎁 Opciones de Reparto</h3>
+    <div class="controls-wrapper">
+      <div class="control-group">
+        <label for="chucheSelect">Tipo de Chuche:</label>
+        <select id="chucheSelect" [(ngModel)]="selectedItemName">
+          @for (item of availableItems; track item.id) {
+            <option [value]="item.name">{{ item.name }}</option>
+          }
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <label for="chucheQuantity">Cantidad a dar:</label>
+        <input id="chucheQuantity" type="number" [(ngModel)]="selectedQuantity" min="1" max="100">
+      </div>
+    </div>
+  </div>
+
   <div class="admin-card">
     <table class="users-table">
       <thead>
@@ -41,3 +60,18 @@
     </table>
   </div>
 </div>
+
+@if (showWarningModal()) {
+  <div class="modal-overlay">
+    <div class="modal-box warning-box">
+      <div class="warning-icon">⚠️</div>
+      <h3>¡Mochila Llena!</h3>
+      <p>{{ warningMessage() }}</p>
+      <p class="text-muted small">No se pueden sobrepasar los 20 espacios de inventario.</p>
+      
+      <button class="btn-warning-close" (click)="closeWarning()">
+        Entendido
+      </button>
+    </div>
+  </div>
+}
