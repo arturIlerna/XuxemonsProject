@@ -198,3 +198,67 @@
     color: #2c3e50;
   }
 }
+
+/* =========================================
+   Controles de Administrador
+   ========================================= */
+
+.admin-controls-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px 30px;
+  margin-bottom: 20px;
+}
+
+.admin-controls-card h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #1a1a1a;
+  font-size: 18px;
+}
+
+.controls-wrapper {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control-group label {
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+.control-group select, 
+.control-group input {
+  padding: 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  min-width: 200px;
+  transition: border-color 0.2s;
+  
+  /* --- AÑADIDO PARA ARREGLAR EL CAMUFLAJE --- */
+  color: #1a1a1a; /* Texto negro/gris oscuro */
+  background-color: #ffffff; /* Fondo blanco forzado */
+}
+
+/* Y por si acaso, blindamos también las opciones del desplegable */
+.control-group select option {
+  color: #1a1a1a;
+  background-color: #ffffff;
+}
+
+.control-group select:focus, 
+.control-group input:focus {
+  border-color: #2196f3;
+}
