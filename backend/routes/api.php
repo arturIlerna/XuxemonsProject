@@ -24,7 +24,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/me', [AuthController::class, 'me']);
     
-    // Seguridad
+    // Seguridad (CRUD Usuarios: Update y Delete)
     Route::put('/users/{id}', [AuthController::class, 'update']);
     Route::delete('/users/{id}', [AuthController::class, 'destroy']);
 
@@ -45,7 +45,7 @@ Route::middleware(['auth:api'])->group(function () {
 
 
     // --- RUTAS DE ADMINISTRADOR ---
-    // Gestión de Usuarios
+    // Gestión de Usuarios (CRUD Usuarios: Read)
     Route::get('/users', [AuthController::class, 'index']);
     
     // Acciones de Inyección de Items
@@ -58,10 +58,12 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('/xuxemons/{id}', [XuxemonController::class, 'destroy']);
 
 
-    // --- COLECCIÓN Y MOCHILA PERSONAL ---
+    // COLECCIÓN Y MOCHILA PERSONAL (CRUD Inventario)
     // Mis Xuxemons capturados
     Route::get('/my-xuxemons', [XuxemonController::class, 'myCollection']);
     
     // Mi inventario real (slots)
-    Route::get('/my-inventory', [InventoryController::class, 'index']);
+    Route::get('/my-inventory', [InventoryController::class, 'index']); // Llistar
+    Route::post('/my-inventory/use/{id}', [InventoryController::class, 'useItem']); // Modificar (Gastar)
+    Route::delete('/my-inventory/{id}', [InventoryController::class, 'destroy']); // Eliminar (Tirar)
 });

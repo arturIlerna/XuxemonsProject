@@ -38,6 +38,8 @@
   display: flex;
   list-style: none;
   gap: 2rem;
+  padding: 0;
+  margin: 0;
 }
 
 .nav-menu a {
@@ -109,6 +111,7 @@ main {
   font-size: 2.5rem;
   color: #2c3e50;
   text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.3);
+  margin: 0;
 }
 
 /* Grid de mochila */
@@ -129,14 +132,15 @@ main {
   background-color: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(10px);
   border-radius: 16px;
-  height: 130px;
+  height: 160px; /* Aumentado ligeramente para que quepan los botones */
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   transition: all 0.3s;
   border: 1px solid rgba(255, 255, 255, 0.5);
-  cursor: pointer;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .slot-card:hover {
@@ -162,17 +166,20 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  width: 100%;
+  gap: 6px;
 }
 
 .item-icon {
   font-size: 2.5rem;
+  margin-top: 5px;
 }
 
 .item-name {
   color: #2c3e50;
   font-size: 0.85rem;
   font-weight: 600;
+  margin-bottom: 5px;
 }
 
 .empty-content {
@@ -181,9 +188,10 @@ main {
   font-weight: 500;
 }
 
+/* Etiqueta de cantidad modificada a la esquina superior derecha */
 .item-badge {
   position: absolute;
-  bottom: 8px;
+  top: 8px; /* Movido arriba para hacer hueco a los botones */
   right: 8px;
   background: linear-gradient(135deg, #f39c12, #e67e22);
   color: white;
@@ -191,6 +199,49 @@ main {
   border-radius: 20px;
   font-size: 0.75rem;
   font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* =========================================
+   NUEVOS BOTONES DE ACCIÓN (Usar y Tirar)
+   ========================================= */
+.item-actions {
+  display: flex;
+  gap: 5px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.btn-use, .btn-throw {
+  border: none;
+  padding: 6px 0;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  flex: 1; /* Ocupan exactamente la mitad cada uno */
+  transition: all 0.2s;
+  color: white;
+}
+
+.btn-use {
+  background-color: rgba(52, 152, 219, 0.85); /* Azul cristalino */
+  border: 1px solid rgba(52, 152, 219, 1);
+}
+
+.btn-use:hover {
+  background-color: rgba(52, 152, 219, 1);
+  transform: scale(1.05);
+}
+
+.btn-throw {
+  background-color: rgba(231, 76, 60, 0.85); /* Rojo cristalino */
+  border: 1px solid rgba(231, 76, 60, 1);
+}
+
+.btn-throw:hover {
+  background-color: rgba(231, 76, 60, 1);
+  transform: scale(1.05);
 }
 
 /* Responsive */
@@ -216,7 +267,7 @@ main {
   }
 
   .slot-card {
-    height: 110px;
+    height: 150px;
   }
 
   .item-icon {
@@ -231,10 +282,15 @@ main {
   }
 
   .slot-card {
-    height: 100px;
+    height: 140px;
   }
 
   .item-name {
+    font-size: 0.75rem;
+  }
+  
+  .btn-use, .btn-throw {
     font-size: 0.7rem;
+    padding: 5px 0;
   }
 }

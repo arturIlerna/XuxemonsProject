@@ -134,6 +134,18 @@ export class Auth {
   getItems(): Observable<any> {
     return this.http.get(`${this.apiUrl}/items`);
   }
+
+  // Gastar objeto (Modificar)
+  useItem(itemId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/my-inventory/use/${itemId}`, {});
+  }
+
+  // Tirar objeto (Eliminar)
+  throwItem(itemId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/my-inventory/${itemId}`);
+  }
 } 
+
+
 
 

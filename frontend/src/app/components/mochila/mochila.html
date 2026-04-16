@@ -32,6 +32,12 @@
               @if (slot.item.type === 'xuxe' && slot.quantity > 0) {
                 <span class="item-badge">x{{ slot.quantity }}</span>
               }
+
+              <div class="item-actions">
+                <button class="btn-use" (click)="usarObjeto(slot)">Usar</button>
+                <button class="btn-throw" (click)="tirarObjeto(slot)">Tirar</button>
+              </div>
+
             </div>
           } @else {
             <div class="empty-content">

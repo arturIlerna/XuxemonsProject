@@ -11,6 +11,8 @@ class XuxemonController extends Controller
     // LECTURA Y FILTROS 
     public function index(Request $request)
     {
+        $userId = auth()->id(); // Obtenemos quién está logueado
+
         // Iniciamos la query
         $query = Xuxemon::query();
 
@@ -22,8 +24,15 @@ class XuxemonController extends Controller
             $query->where('size', $request->size);
         }
 
-        // Ejecutamos la query y devolvemos los resultados
-        $xuxemons = $query->get();
+        // Ejecutamos la query y mapeamos los resultados para añadir si es capturado o no
+        $xuxemons = $query->get()->map(function($xuxemon) use ($userId) {
+            // Miramos si en la tabla intermedia existe una relación entre el usuario y este Xuxemon
+            $xuxemon->is_captured = UserXuxemon::where('user_id', $userId)
+                                    ->where('xuxemon_id', $xuxemon->id)
+                                    ->exists();
+            return $xuxemon;
+        });
+
         return response()->json($xuxemons, 200);
     }
 
