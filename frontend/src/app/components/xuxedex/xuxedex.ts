@@ -3,8 +3,13 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '../../services/auth';
-import { XuxemonsService, Xuxemon } from '../../services/xuxemons.service'; 
+import { XuxemonsService, Xuxemon as BaseXuxemon } from '../../services/xuxemons.service'; 
 import { Subscription } from 'rxjs';
+
+// NUEVO: Extendemos la interfaz original para añadir la propiedad que nos envía Laravel
+export interface Xuxemon extends BaseXuxemon {
+  is_captured?: boolean;
+}
 
 @Component({
   selector: 'app-xuxedex',
@@ -68,7 +73,7 @@ export class Xuxedex implements OnInit, OnDestroy {
         // Aplicamos la búsqueda por texto local
         this.applyLocalSearch();
       },
-      error: (err) => {
+      error: (err: any) => { // <-- ARREGLADO: Añadido : any
         this.loading = false;
         this.error = 'No se pudieron cargar los Xuxemons desde el servidor.';
         console.error('Error cargando Xuxemons:', err);

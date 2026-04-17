@@ -16,6 +16,11 @@
   <header class="page-header">
     <h1>Mi Xuxedex</h1>
     <p class="total-count">Total Xuxemons: {{ allXuxemons.length }}</p>
+    
+    <div class="view-tabs">
+      <a routerLink="/xuxedex" class="tab-btn active">Catálogo Global</a>
+      <a routerLink="/mis-xuxemons" class="tab-btn">Mis Xuxemons</a>
+    </div>
   </header>
 
   <section class="filters-section">
@@ -121,11 +126,11 @@
                 }
               </button>
               
-              <span class="capture-status" [class.captured]="xuxemon.captured">
-                @if (xuxemon.captured) {
-                  Capturado
+              <span class="capture-status" [class.captured]="xuxemon.is_captured">
+                @if (xuxemon.is_captured) {
+                  ✅ Capturado
                 } @else {
-                  No capturado
+                  ❓ No capturado
                 }
               </span>
             </footer>
