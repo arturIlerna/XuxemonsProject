@@ -3,7 +3,7 @@
     <a routerLink="/dashboard" class="nav-brand">Xuxemons</a>
     <ul class="nav-menu">
       <li><a routerLink="/xuxedex" routerLinkActive="active">Xuxedex</a></li>
-      <li><a routerLink="/inventory" routerLinkActive="active">Mochila</a></li>
+      <li><a (click)="irAMochila()" style="cursor: pointer;">Mochila</a></li>
     </ul>
     <div class="nav-user">
       <span>{{ userName }}</span>
@@ -14,78 +14,79 @@
 
 <main>
   <header class="page-header">
-    <h1>Mi Xuxedex</h1>
-    <p class="total-count">Total Xuxemons: {{ allXuxemons.length }}</p>
+    <h1>{{ viewMode === 'catalogo' ? 'Xuxedex Global' : 'Mis Xuxemons' }}</h1>
+    <p class="total-count">Total: {{ getTotalCount() }}</p>
     
     <div class="view-tabs">
-      <a routerLink="/xuxedex" class="tab-btn active">Catálogo Global</a>
-      <a routerLink="/mis-xuxemons" class="tab-btn">Mis Xuxemons</a>
+      <button class="tab-btn" [class.active]="viewMode === 'catalogo'" (click)="setViewMode('catalogo')">
+        Catálogo Global
+      </button>
+      <button class="tab-btn" [class.active]="viewMode === 'mis-xuxemons'" (click)="setViewMode('mis-xuxemons')">
+        Mis Xuxemons
+      </button>
     </div>
   </header>
 
-  <section class="filters-section">
-    <div class="search-box">
-      <input 
-        type="text" 
-        placeholder="Buscar Xuxemon por nombre..."
-        [(ngModel)]="searchTerm"
-        (input)="applyLocalSearch()"
-      >
-    </div>
-
-    <fieldset class="filter-group">
-      <legend>Filtrar por tipo:</legend>
-      <div class="filter-buttons">
-        @for (type of ['todos', 'Agua', 'Tierra', 'Aire']; track type) {
-          <button 
-            [class.active]="selectedType === type"
-            (click)="filterByType(type)"
-          >
-            {{ type === 'todos' ? 'Todos' : type }}
-          </button>
-        }
+  @if (viewMode === 'catalogo') {
+    <section class="filters-section">
+      <div class="search-box">
+        <input 
+          type="text" 
+          placeholder="Buscar Xuxemon por nombre..."
+          [(ngModel)]="searchTerm"
+          (input)="applyLocalSearch()"
+        >
       </div>
-    </fieldset>
 
-    <fieldset class="filter-group">
-      <legend>Filtrar por tamaño:</legend>
-      <div class="filter-buttons">
-        @for (size of ['todas', 'Pequeño', 'Mediano', 'Grande']; track size) {
-          <button 
-            [class.active]="selectedSize === size"
-            (click)="filterBySize(size)"
-          >
-            {{ size === 'todas' ? 'Todas' : size }}
-          </button>
-        }
-      </div>
-    </fieldset>
-  </section>
+      <fieldset class="filter-group">
+        <legend>Filtrar por tipo:</legend>
+        <div class="filter-buttons">
+          @for (type of ['todos', 'Agua', 'Tierra', 'Aire']; track type) {
+            <button 
+              [class.active]="selectedType === type"
+              (click)="filterByType(type)"
+            >
+              {{ type === 'todos' ? 'Todos' : type }}
+            </button>
+          }
+        </div>
+      </fieldset>
+
+      <fieldset class="filter-group">
+        <legend>Filtrar por tamaño:</legend>
+        <div class="filter-buttons">
+          @for (size of ['todas', 'Pequeño', 'Mediano', 'Grande']; track size) {
+            <button 
+              [class.active]="selectedSize === size"
+              (click)="filterBySize(size)"
+            >
+              {{ size === 'todas' ? 'Todas' : size }}
+            </button>
+          }
+        </div>
+      </fieldset>
+    </section>
+  }
 
   @if (loading) {
-    <div class="loading">
-      Cargando Xuxemons...
-    </div>
+    <div class="loading">Cargando Xuxemons...</div>
   }
 
   @if (error) {
-    <div class="error">
-      {{ error }}
-      <button (click)="loadXuxemonsFromBackend()">Reintentar</button>
-    </div>
+    <div class="error">{{ error }}</div>
   }
 
-  @if (!loading && !error && allXuxemons.length === 0) {
+  @if (!loading && getCurrentList().length === 0 && viewMode === 'mis-xuxemons') {
     <div class="no-results">
-      <p>No se encuentran Xuxemons con estos filtros</p>
+      <p>🎁 No tienes Xuxemons. Inicia sesión después de las 8:00 para recibir tu primer Xuxemon!</p>
     </div>
   }
 
-  @if (!loading && !error && allXuxemons.length > 0) {
+  @if (!loading && !error && getCurrentList().length > 0) {
     <section class="xuxedex-section">
       <div class="xuxemons-grid">
-        @for (xuxemon of allXuxemons; track xuxemon.id) {
-          <article class="xuxemon-card" (click)="viewDetails(xuxemon)">
+        @for (xuxemon of getCurrentList(); track xuxemon.id) {
+          <article class="xuxemon-card">
             <header class="card-header" [style.background]="getTypeColor(xuxemon.type)">
               <span class="xuxemon-type-badge">{{ xuxemon.type }}</span>
               <span class="xuxemon-level">Nv. {{ xuxemon.level }}</span>
@@ -101,38 +102,31 @@
               <h2 class="xuxemon-name">{{ xuxemon.name }}</h2>
               
               <div class="badges-container">
-                <span class="badge badge-type" 
-                      [style.background]="getTypeColor(xuxemon.type)">
+                <span class="badge badge-type" [style.background]="getTypeColor(xuxemon.type)">
                   {{ xuxemon.type }}
                 </span>
-                <span class="badge badge-size">
-                  {{ getSizeText(xuxemon.size) }}
-                </span>
+                @if (viewMode === 'mis-xuxemons') {
+                  <span class="badge badge-size">{{ getSizeText(xuxemon.size) }}</span>
+                }
               </div>
             </div>
             
             <footer class="card-footer">
-              <button 
-                class="btn-evolve" 
-                (click)="evolveSize(xuxemon, $event)" 
-                [disabled]="xuxemon.size === 'Grande'"
-              >
-                @if (xuxemon.size === 'Pequeño') {
-                  Evolucionar a Mediano
-                } @else if (xuxemon.size === 'Mediano') {
-                  Evolucionar a Grande
-                } @else {
-                  Tamaño máximo
-                }
-              </button>
-              
-              <span class="capture-status" [class.captured]="xuxemon.is_captured">
-                @if (xuxemon.is_captured) {
-                  ✅ Capturado
-                } @else {
-                  ❓ No capturado
-                }
-              </span>
+              @if (viewMode === 'mis-xuxemons') {
+                <button 
+                  class="btn-evolve" 
+                  (click)="evolveSize(xuxemon, $event)" 
+                  [disabled]="xuxemon.size === 'Grande'"
+                >
+                  @if (xuxemon.size === 'Pequeño') {
+                    Evolucionar a Mediano
+                  } @else if (xuxemon.size === 'Mediano') {
+                    Evolucionar a Grande
+                  } @else {
+                    Tamaño máximo
+                  }
+                </button>
+              }
             </footer>
           </article>
         }

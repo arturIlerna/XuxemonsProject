@@ -1,5 +1,4 @@
 services:
-  # Base de Datos (MySQL)
   db:
     image: mysql:8.0
     container_name: xuxe-db
@@ -7,6 +6,7 @@ services:
     environment:
       MYSQL_DATABASE: xuxedex_db
       MYSQL_ROOT_PASSWORD: root
+      TZ: Europe/Madrid  # ← Agrega zona horaria
     ports:
       - "3306:3306"
     volumes:
@@ -14,13 +14,14 @@ services:
     networks:
       - xuxe-network
 
-  # Backend (Laravel)
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: xuxe-backend
     restart: unless-stopped
+    environment:
+      TZ: Europe/Madrid  # ← Agrega zona horaria
     ports:
       - "8000:8000"
     volumes:
@@ -29,9 +30,15 @@ services:
       - db
     networks:
       - xuxe-network
-    command: php artisan serve --host=0.0.0.0 --port=8000
+    command: >
+      sh -c "
+        php artisan serve --host=0.0.0.0 --port=8000 &
+        while true; do
+          php artisan schedule:run --verbose --no-interaction
+          sleep 60
+        done
+      "
 
-  # Frontend (Angular) - CORREGIDO
   frontend:
     image: node:20
     container_name: xuxe-frontend
@@ -53,7 +60,6 @@ services:
         npx ng serve --host 0.0.0.0 --port 4201
       "
 
-# Red y volúmenes
 networks:
   xuxe-network:
     driver: bridge

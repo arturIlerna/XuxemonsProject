@@ -2,6 +2,13 @@
   <div class="login-container">
     <h2>Login Xuxedex</h2>
     
+    <!-- Mensaje de recompensa diaria -->
+    @if (mensajeRecompensa) {
+      <div class="recompensa-mensaje">
+        🎁 {{ mensajeRecompensa }}
+      </div>
+    }
+    
     <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
       
       <div>

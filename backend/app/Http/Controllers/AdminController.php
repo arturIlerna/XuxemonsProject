@@ -8,6 +8,7 @@ use App\Models\Xuxemon;
 use App\Models\UserXuxemon;
 use App\Models\UserItem;
 use App\Models\Item; 
+use App\Models\Configuracion; // ← Agregar esta importación
 
 class AdminController extends Controller
 {
@@ -116,5 +117,47 @@ class AdminController extends Controller
             'message' => '¡Todas las chuches inyectadas en la mochila correctamente!',
             'discarded' => false
         ], 200);
+    }
+
+    // ========== NUEVOS MÉTODOS PARA CONFIGURACIÓN ==========
+
+    // Obtener todas las configuraciones
+    public function getConfig()
+    {
+        $configs = Configuracion::all();
+        return response()->json($configs, 200);
+    }
+
+    // Actualizar configuraciones
+    public function updateConfig(Request $request)
+    {
+        $request->validate([
+            'hora_xuxes_diarias' => 'nullable|date_format:H:i',
+            'cantidad_xuxes_diarias' => 'nullable|integer|min:1|max:100',
+            'hora_xuxemon_diario' => 'nullable|date_format:H:i',
+        ]);
+        
+        if ($request->has('hora_xuxes_diarias')) {
+            Configuracion::updateOrCreate(
+                ['clave' => 'hora_xuxes_diarias'],
+                ['valor' => json_encode($request->hora_xuxes_diarias)]
+            );
+        }
+        
+        if ($request->has('cantidad_xuxes_diarias')) {
+            Configuracion::updateOrCreate(
+                ['clave' => 'cantidad_xuxes_diarias'],
+                ['valor' => json_encode($request->cantidad_xuxes_diarias)]
+            );
+        }
+        
+        if ($request->has('hora_xuxemon_diario')) {
+            Configuracion::updateOrCreate(
+                ['clave' => 'hora_xuxemon_diario'],
+                ['valor' => json_encode($request->hora_xuxemon_diario)]
+            );
+        }
+        
+        return response()->json(['message' => 'Configuración actualizada correctamente'], 200);
     }
 }

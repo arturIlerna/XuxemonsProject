@@ -10,7 +10,6 @@
 .dashboard-wrapper {
   min-height: 100vh;
   background: linear-gradient(135deg, #a8c0ff 0%, #8ec5fc 100%);
-  /* Gradiente más claro: azul muy suave */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -34,7 +33,6 @@
 
 .logo-section h1 {
   color: #2c3e50;
-  /* Azul oscuro para mejor contraste */
   font-size: 1.8rem;
   font-weight: bold;
   text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
@@ -157,25 +155,30 @@
   padding: 1.5rem;
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 15px;
+  flex-wrap: wrap;
 }
 
 .stat-item {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex: 1;
+  min-width: 200px;
 }
 
-.stat-label {
+.stat-item .stat-label {
   color: #2c3e50;
   font-size: 1rem;
   font-weight: 600;
 }
 
 .stat-value {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: bold;
   padding: 6px 16px;
   border-radius: 30px;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: #2c3e50;
 }
 
 .stat-value.caramel {
@@ -186,6 +189,65 @@
 .stat-value.level {
   background-color: rgba(46, 204, 113, 0.25);
   color: #1e7e34;
+}
+
+/* =========================================
+   DASHBOARD STATS
+   ========================================= */
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+.stat-icon {
+  font-size: 3.5rem;
+  min-width: 80px;
+  text-align: center;
+}
+
+.stat-info {
+  flex: 1;
+}
+
+.stat-info h3 {
+  font-size: 0.95rem;
+  color: #7f8c8d;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stat-number {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #3498db;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #95a5a6;
+  line-height: 1.4;
 }
 
 /* =========================================
@@ -221,7 +283,6 @@
 
 .type-badge.ground {
   background-color: #cd7b4a;
-  /* Marrón más claro */
   box-shadow: 0 4px 10px rgba(205, 123, 74, 0.3);
 }
 

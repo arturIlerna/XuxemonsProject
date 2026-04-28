@@ -246,13 +246,10 @@
   outline: none;
   min-width: 200px;
   transition: border-color 0.2s;
-  
-  /* --- AÑADIDO PARA ARREGLAR EL CAMUFLAJE --- */
-  color: #1a1a1a; /* Texto negro/gris oscuro */
-  background-color: #ffffff; /* Fondo blanco forzado */
+  color: #1a1a1a;
+  background-color: #ffffff;
 }
 
-/* Y por si acaso, blindamos también las opciones del desplegable */
 .control-group select option {
   color: #1a1a1a;
   background-color: #ffffff;
@@ -261,4 +258,115 @@
 .control-group select:focus, 
 .control-group input:focus {
   border-color: #2196f3;
+}
+
+/* =========================================
+   CONFIGURACIÓN DEL JUEGO (NUEVO)
+   ========================================= */
+
+.config-card {
+  margin-bottom: 30px;
+}
+
+.config-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.config-group {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.config-group h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a1a1a;
+  background-color: #ffffff;
+}
+
+.form-group input[type="time"] {
+  width: auto;
+}
+
+.form-group small {
+  display: block;
+  color: #999;
+  font-size: 11px;
+  margin-top: 5px;
+}
+
+.form-actions {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.btn-save {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-save:hover {
+  background: #218838;
+  transform: translateY(-2px);
+}
+
+.alert {
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.alert.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.alert.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+@media (max-width: 768px) {
+  .config-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .form-group input[type="time"] {
+    width: 100%;
+  }
 }

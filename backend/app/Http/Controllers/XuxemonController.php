@@ -2,85 +2,123 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Xuxemon; 
-use App\Models\UserXuxemon; 
 use Illuminate\Http\Request;
+use App\Models\Xuxemon;
+use App\Models\UserXuxemon;
 
 class XuxemonController extends Controller
 {
-    // LECTURA Y FILTROS 
+    // Catálogo global de Xuxemons
     public function index(Request $request)
     {
-        $userId = auth()->id(); // Obtenemos quién está logueado
-
-        // Iniciamos la query
         $query = Xuxemon::query();
-
-        // Aplicamos los filtros por Query si el Frontend los envía (?type=Agua&size=Pequeño)
+        
         if ($request->has('type') && $request->type !== 'todos') {
             $query->where('type', $request->type);
         }
+        
         if ($request->has('size') && $request->size !== 'todas') {
             $query->where('size', $request->size);
         }
-
-        // Ejecutamos la query y mapeamos los resultados para añadir si es capturado o no
-        $xuxemons = $query->get()->map(function($xuxemon) use ($userId) {
-            // Miramos si en la tabla intermedia existe una relación entre el usuario y este Xuxemon
-            $xuxemon->is_captured = UserXuxemon::where('user_id', $userId)
-                                    ->where('xuxemon_id', $xuxemon->id)
-                                    ->exists();
-            return $xuxemon;
-        });
-
-        return response()->json($xuxemons, 200);
+        
+        return response()->json($query->get());
     }
-
+    
+    // Mis Xuxemons (colección del usuario)
     public function myCollection()
     {
-        $myCollection = UserXuxemon::join('xuxemons', 'user_xuxemons.xuxemon_id', '=', 'xuxemons.id')
-            ->where('user_xuxemons.user_id', auth()->id())
-            ->select('xuxemons.*', 'user_xuxemons.size as current_size') 
-            ->get();
-            
-        return response()->json($myCollection, 200);
+        $userXuxemons = UserXuxemon::where('user_id', auth()->id())
+            ->with('xuxemon')
+            ->get()
+            ->map(function ($userXuxemon) {
+                return [
+                    'id' => $userXuxemon->id,
+                    'name' => $userXuxemon->xuxemon->name,
+                    'type' => $userXuxemon->xuxemon->type,
+                    'size' => $userXuxemon->size,
+                    'level' => $userXuxemon->xuxemon->level,
+                    'attack' => $userXuxemon->xuxemon->attack,
+                    'defense' => $userXuxemon->xuxemon->defense,
+                ];
+            });
+        
+        return response()->json($userXuxemons);
     }
-
-    // 2. CRUD DEL ADMIN
     
-    // CREAR un nuevo Xuxemon global
+    // Crear un nuevo Xuxemon en el catálogo
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|string|in:Agua,Tierra,Aire',
-            'size' => 'required|string|in:Pequeño,Mediano,Grande',
-            'image' => 'nullable|string'
+            'type' => 'required|string',
+            'size' => 'required|string',
+            'level' => 'required|integer',
         ]);
-
-        $xuxemon = Xuxemon::create($validatedData);
-
-        return response()->json(['message' => 'Xuxemon creado', 'xuxemon' => $xuxemon], 201);
+        
+        $xuxemon = Xuxemon::create($request->all());
+        
+        return response()->json($xuxemon, 201);
     }
-
-    // MODIFICAR un Xuxemon global
+    
+    // Actualizar un Xuxemon del catálogo
     public function update(Request $request, $id)
     {
-        $xuxemon = Xuxemon::find($id);
-        if (!$xuxemon) return response()->json(['message' => 'No encontrado'], 404);
-
+        $xuxemon = Xuxemon::findOrFail($id);
         $xuxemon->update($request->all());
         
-        return response()->json(['message' => 'Xuxemon actualizado', 'xuxemon' => $xuxemon], 200);
+        return response()->json($xuxemon);
     }
-
-    // ELIMINAR un Xuxemon global
+    
+    // Eliminar un Xuxemon del catálogo
     public function destroy($id)
     {
-        $xuxemon = Xuxemon::find($id);
-        if (!$xuxemon) return response()->json(['message' => 'No encontrado'], 404);
-
+        $xuxemon = Xuxemon::findOrFail($id);
         $xuxemon->delete();
-        return response()->json(['message' => 'Xuxemon eliminado correctamente'], 200);
+        
+        return response()->json(['message' => 'Xuxemon eliminado']);
+    }
+    
+    // ========== MÉTODO DE EVOLUCIÓN ==========
+    public function evolve($id)
+    {
+        try {
+            $userXuxemon = UserXuxemon::where('id', $id)
+                ->where('user_id', auth()->id())
+                ->firstOrFail();
+            
+            $nuevoTamaño = '';
+            $mensaje = '';
+            
+            switch($userXuxemon->size) {
+                case 'Pequeño':
+                    $nuevoTamaño = 'Mediano';
+                    $mensaje = '¡Tu Xuxemon ha evolucionado a tamaño Mediano!';
+                    break;
+                case 'Mediano':
+                    $nuevoTamaño = 'Grande';
+                    $mensaje = '¡Tu Xuxemon ha evolucionado a tamaño Grande!';
+                    break;
+                default:
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Ya está en tamaño máximo'
+                    ], 400);
+            }
+            
+            $userXuxemon->size = $nuevoTamaño;
+            $userXuxemon->save();
+            
+            return response()->json([
+                'success' => true,
+                'message' => $mensaje,
+                'size' => $nuevoTamaño
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al evolucionar el Xuxemon'
+            ], 500);
+        }
     }
 }

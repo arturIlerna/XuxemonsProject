@@ -33,6 +33,16 @@ export class Admin implements OnInit {
   public showWarningModal = signal<boolean>(false);
   public warningMessage = signal<string>('');
 
+  // ========== NUEVO: Configuraciones del Juego ==========
+  config = {
+    hora_xuxes_diarias: '08:00',
+    cantidad_xuxes_diarias: 10,
+    hora_xuxemon_diario: '08:00'
+  };
+  
+  mensajeConfig: string = '';
+  errorConfig: string = '';
+
   constructor(
     private router: Router, 
     private authService: Auth,
@@ -42,6 +52,7 @@ export class Admin implements OnInit {
   ngOnInit() {
     this.loadUsers();
     this.loadItems(); // Cargamos el catálogo de chuches
+    this.loadConfiguraciones(); // ========== NUEVO: Cargar configuraciones
   }
 
   loadUsers() {
@@ -78,6 +89,44 @@ export class Admin implements OnInit {
       },
       error: (err) => {
         console.error('❌ Error al cargar el catálogo de chuches:', err);
+      }
+    });
+  }
+
+  // ========== NUEVO: Cargar configuraciones del juego ==========
+  loadConfiguraciones() {
+    this.authService.getConfiguraciones().subscribe({
+      next: (data: any) => {
+        if (Array.isArray(data)) {
+          data.forEach((item: any) => {
+            if (item.clave === 'hora_xuxes_diarias') {
+              this.config.hora_xuxes_diarias = JSON.parse(item.valor);
+            } else if (item.clave === 'cantidad_xuxes_diarias') {
+              this.config.cantidad_xuxes_diarias = JSON.parse(item.valor);
+            } else if (item.clave === 'hora_xuxemon_diario') {
+              this.config.hora_xuxemon_diario = JSON.parse(item.valor);
+            }
+          });
+        }
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar configuraciones:', err);
+      }
+    });
+  }
+
+  // ========== NUEVO: Guardar configuraciones ==========
+  guardarConfiguracion() {
+    this.authService.updateConfiguraciones(this.config).subscribe({
+      next: (res: any) => {
+        this.mensajeConfig = '✅ Configuración guardada correctamente';
+        this.errorConfig = '';
+        setTimeout(() => this.mensajeConfig = '', 3000);
+      },
+      error: (err) => {
+        this.errorConfig = '❌ Error al guardar configuración';
+        this.mensajeConfig = '';
+        console.error(err);
       }
     });
   }

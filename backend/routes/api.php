@@ -66,4 +66,10 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/my-inventory', [InventoryController::class, 'index']); // Llistar
     Route::post('/my-inventory/use/{id}', [InventoryController::class, 'useItem']); // Modificar (Gastar)
     Route::delete('/my-inventory/{id}', [InventoryController::class, 'destroy']); // Eliminar (Tirar)
+
+    // ========== NUEVAS RUTAS DE CONFIGURACIÓN ==========
+    // Configuración del juego (solo admin)
+    Route::get('/admin/config', [AdminController::class, 'getConfig']);
+    Route::put('/admin/config', [AdminController::class, 'updateConfig']);
+    Route::post('/evolve/{id}', [XuxemonController::class, 'evolve']);
 });
