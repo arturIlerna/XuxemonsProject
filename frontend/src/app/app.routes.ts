@@ -8,6 +8,7 @@ import { authGuard } from './guards/auth.guard';
 import { Mochila } from './components/mochila/mochila';
 import { Admin } from './components/admin/admin';
 import { adminGuard } from './guards/admin.guard';
+import { FriendsComponent } from './components/friends/friends';
 
 export const routes: Routes = [
   { 
@@ -41,7 +42,7 @@ export const routes: Routes = [
   { 
     path: 'inventory', 
     component: Mochila,
-    canActivate: [authGuard], // Añadido el guard para proteger el inventario
+    canActivate: [authGuard],
     title: 'La meva Motxilla - Xuxedex' 
   },
   { 
@@ -49,6 +50,12 @@ export const routes: Routes = [
     component: Admin, 
     canActivate: [adminGuard],
     title: 'Administració - Xuxedex' 
+  },
+  { 
+    path: 'friends', 
+    component: FriendsComponent, 
+    canActivate: [authGuard],
+    title: 'Amics - Xuxedex' 
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];

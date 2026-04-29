@@ -1,0 +1,105 @@
+<nav class="navbar">
+  <div class="nav-container">
+    <a routerLink="/dashboard" class="nav-brand">Xuxemons</a>
+    <ul class="nav-menu">
+      <li><a routerLink="/xuxedex" routerLinkActive="active">Catálogo</a></li>
+      <li><a routerLink="/mis-xuxemons" routerLinkActive="active">Mis Xuxemons</a></li>
+      <li><a routerLink="/inventory" routerLinkActive="active">Mochila</a></li>
+      <li><a routerLink="/friends" routerLinkActive="active">Amigos</a></li>
+    </ul>
+    <div class="nav-user">
+      <span>{{ userName }}</span>
+      <button (click)="logout()" class="btn-logout">Cerrar sesión</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="friends-container">
+    <h1>👥 Amigos</h1>
+    
+    <!-- Buscador -->
+    <div class="search-section">
+      <h2>🔍 Buscar usuarios</h2>
+      <input 
+        type="text" 
+        [formControl]="searchControl"
+        placeholder="Buscar por ID (ej: #Juan4757)"
+        class="search-input"
+      >
+      
+      @if (searching) {
+        <div class="loading">Buscando...</div>
+      }
+      
+      @if (searchResults.length > 0 && !searching) {
+        <div class="search-results">
+          <h3>Resultados:</h3>
+          <div class="users-list">
+            @for (user of searchResults; track user.id) {
+              <div class="user-card">
+                <div class="user-info">
+                  <strong>{{ user.xuxe_id }}</strong>
+                </div>
+                <button 
+                  class="btn-send"
+                  (click)="sendRequest(user.id)"
+                  [disabled]="!canSendRequest(user)"
+                >
+                  {{ getFriendshipStatus(user) }}
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Solicitudes pendientes -->
+    <div class="pending-section">
+      <h2>📨 Solicitudes pendientes</h2>
+      @if (loadingPending) {
+        <div class="loading">Cargando...</div>
+      } @else if (pendingRequests.length === 0) {
+        <p class="empty">No hay solicitudes pendientes</p>
+      } @else {
+        <div class="requests-list">
+          @for (req of pendingRequests; track req.id) {
+            <div class="request-card">
+              <div class="user-info">
+                <strong>{{ req.user?.xuxe_id }}</strong>
+              </div>
+              <div class="request-actions">
+                <button class="btn-accept" (click)="acceptRequest(req.id)">✓ Aceptar</button>
+                <button class="btn-reject" (click)="rejectRequest(req.id)">✗ Rechazar</button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Lista de amigos -->
+    <div class="friends-section">
+      <h2>👫 Mis amigos ({{ friendsList.length }})</h2>
+      @if (loadingFriends) {
+        <div class="loading">Cargando...</div>
+      } @else if (friendsList.length === 0) {
+        <p class="empty">No tienes amigos aún. Busca usuarios para añadirlos.</p>
+      } @else {
+        <div class="friends-list">
+          @for (friend of friendsList; track friend.id) {
+            <div class="friend-card">
+              <div class="user-info">
+                <strong>{{ friend.xuxe_id }}</strong>
+              </div>
+              <button class="btn-remove" (click)="removeFriend(friend)">
+                ❌ Eliminar
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</main>

@@ -1,8 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
-import { Auth } from '../../services/auth';  // Asegúrate que la ruta sea correcta
-
+import { Observable } from 'rxjs';  // ← NUEVO
+import { Auth } from '../../services/auth';
+import { FriendService } from '../../services/friend.service';  // ← NUEVO
 
 @Component({
   selector: 'app-dashboard',
@@ -14,24 +15,31 @@ import { Auth } from '../../services/auth';  // Asegúrate que la ruta sea corre
 export class Dashboard implements OnInit {
   
   userName: string = '';
-  totalXuxes: number = 0;  // ← Variable para los Xuxes
-  totalXuxemons: number = 0;  // ← Variable para los Xuxemons
-  totalCaramelos: number = 0;  // ← Variable para los Caramelos
+  totalXuxes: number = 0;
+  totalXuxemons: number = 0;
+  totalCaramelos: number = 0;
   isLoading: boolean = true;
+  pendingCount$: Observable<number>;  // ← NUEVO
 
   constructor(
     private authService: Auth,
+    private friendService: FriendService,  // ← NUEVO
     private router: Router,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    this.pendingCount$ = this.friendService.pendingCount$;  // ← NUEVO
+  }
 
   ngOnInit() {
     this.cargarUserInfo();
-    this.cargarTotalXuxes();  // ← Cargar los Xuxes
-    this.cargarTotalXuxemons();  // ← Cargar los Xuxemons
-    this.cargarTotalCaramelos();  // ← Cargar los Caramelos
+    this.cargarTotalXuxes();
+    this.cargarTotalXuxemons();
+    this.cargarTotalCaramelos();
+    this.friendService.refreshPendingCount();  // ← NUEVO
   }
 
+  // ... el resto de tu código se queda igual ...
+  
   cargarUserInfo() {
     const user = this.authService.getUser();
     if (user) {
@@ -39,7 +47,6 @@ export class Dashboard implements OnInit {
     }
   }
 
-  // ← NUEVO MÉTODO: Cargar total de Xuxes del usuario
   cargarTotalXuxes() {
     this.authService.getMyInventory().subscribe({
       next: (data: any) => {
@@ -47,7 +54,6 @@ export class Dashboard implements OnInit {
         
         let items: any[] = [];
         
-        // Manejar diferentes formatos de respuesta
         if (Array.isArray(data)) {
           items = data;
         } else if (data && Array.isArray(data.data)) {
@@ -59,7 +65,6 @@ export class Dashboard implements OnInit {
         
         console.log('📦 Items procesados:', items);
         
-        // Sumar todas las cantidades de Xuxes
         this.totalXuxes = items.reduce((total: number, item: any) => {
           console.log('✅ Item encontrado:', item.name, 'Cantidad:', item.quantity);
           if (item.name && item.name.toLowerCase().includes('xuxe')) {
@@ -70,7 +75,7 @@ export class Dashboard implements OnInit {
         
         console.log('✅ Xuxes totales calculados:', this.totalXuxes);
         this.isLoading = false;
-        this.cdr.detectChanges();  // ← Fuerza actualización de la vista
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('❌ Error cargando Xuxes:', err);
@@ -80,7 +85,6 @@ export class Dashboard implements OnInit {
     });
   }
 
-  // ← NUEVO MÉTODO: Cargar total de Xuxemons del usuario
   cargarTotalXuxemons() {
     this.authService.getMyXuxemons().subscribe({
       next: (data: any) => {
@@ -100,9 +104,8 @@ export class Dashboard implements OnInit {
         console.log('📚 Xuxemons procesados:', xuxemons);
         this.totalXuxemons = xuxemons.length;
         console.log('✅ Total Xuxemons:', this.totalXuxemons);
-        // Mostrar todos los nombres para ver cuales son caramelos
         console.log('📋 Todos los items en inventario:', xuxemons.map((x: any) => x.name || 'sin nombre'));
-        this.cdr.detectChanges();  // ← Fuerza actualización de la vista
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('❌ Error cargando Xuxemons:', err);
@@ -111,7 +114,6 @@ export class Dashboard implements OnInit {
     });
   }
 
-  // ← NUEVO MÉTODO: Cargar total de Caramelos del usuario
   cargarTotalCaramelos() {
     this.authService.getMyInventory().subscribe({
       next: (data: any) => {
@@ -126,9 +128,7 @@ export class Dashboard implements OnInit {
         console.log('🍬 Items en inventario para Caramelos:', items);
         console.log('📋 TODOS LOS NOMBRES DE ITEMS:', items.map((i: any) => i.name));
         
-        // Buscar el item de Caramelos
         this.totalCaramelos = items.reduce((total: number, item: any) => {
-          // Buscar cualquier item que contenga "caramelo", "candy", "dulce", "sweet" o "caramel"
           const nombreLower = (item.name || '').toLowerCase();
           if (nombreLower.includes('caramelo') || nombreLower.includes('candy') || 
               nombreLower.includes('dulce') || nombreLower.includes('sweet') || 
@@ -140,7 +140,7 @@ export class Dashboard implements OnInit {
         }, 0);
         
         console.log('✅ Total Caramelos:', this.totalCaramelos);
-        this.cdr.detectChanges();  // ← Fuerza actualización de la vista
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('❌ Error cargando Caramelos:', err);

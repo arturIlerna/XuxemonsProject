@@ -15,34 +15,37 @@
   <!-- CONTENEDOR PRINCIPAL -->
   <div class="main-container">
     <!-- SIDEBAR -->
-    <div class="sidebar">
-      <nav class="nav-menu">
-        <a routerLink="/inventory" class="nav-item">
-          <span class="nav-icon">🎒</span>
-          Mochila
-        </a>
-        <a routerLink="/xuxedex" class="nav-item">
-          <span class="nav-icon">📚</span>
-          Xuxedex
-        </a>
-        <a routerLink="/battle" class="nav-item">
-          <span class="nav-icon">⚔️</span>
-          Batalla
-        </a>
-        <a routerLink="/profile" class="nav-item">
-          <span class="nav-icon">👤</span>
-          Perfil
-        </a>
-        <a routerLink="/chat" class="nav-item">
-          <span class="nav-icon">💬</span>
-          Chat
-        </a>
-        <a routerLink="/friends" class="nav-item">
-          <span class="nav-icon">👥</span>
-          Amigos
-        </a>
-      </nav>
-    </div>
+   <div class="sidebar">
+  <nav class="nav-menu">
+    <a routerLink="/inventory" class="nav-item">
+      <span class="nav-icon">🎒</span>
+      Mochila
+    </a>
+    <a routerLink="/xuxedex" class="nav-item">
+      <span class="nav-icon">📚</span>
+      Xuxedex
+    </a>
+    <a routerLink="/battle" class="nav-item">
+      <span class="nav-icon">⚔️</span>
+      Batalla
+    </a>
+    <a routerLink="/profile" class="nav-item">
+      <span class="nav-icon">👤</span>
+      Perfil
+    </a>
+    <a routerLink="/chat" class="nav-item">
+      <span class="nav-icon">💬</span>
+      Chat
+    </a>
+    <a routerLink="/friends" class="nav-item">
+      <span class="nav-icon">👥</span>
+      Amigos
+      @if (pendingCount$ | async; as count) {
+        <span class="badge">{{ count }}</span>
+      }
+    </a>
+  </nav>
+</div>
 
     <!-- ÁREA DE CONTENIDO -->
     <div class="content-area">

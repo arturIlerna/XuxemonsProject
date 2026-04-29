@@ -37,18 +37,11 @@ Route::middleware(['auth:api'])->group(function () {
     });
 
     // --- CATÁLOGOS GLOBALES (Lectura) ---
-    // Obtener catálogo de Xuxemons (con filtros)
     Route::get('/xuxemons', [XuxemonController::class, 'index']);
-    
-    // Obtener catálogo de Objetos/Chuches (Nivel 2)
     Route::get('/items', [AdminController::class, 'getItems']);
 
-
     // --- RUTAS DE ADMINISTRADOR ---
-    // Gestión de Usuarios (CRUD Usuarios: Read)
     Route::get('/users', [AuthController::class, 'index']);
-    
-    // Acciones de Inyección de Items
     Route::post('/admin/give-xuxemon', [AdminController::class, 'giveRandomXuxemon']);
     Route::post('/admin/give-xuxes', [AdminController::class, 'giveXuxes']);
 
@@ -57,19 +50,24 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('/xuxemons/{id}', [XuxemonController::class, 'update']);
     Route::delete('/xuxemons/{id}', [XuxemonController::class, 'destroy']);
 
-
-    // COLECCIÓN Y MOCHILA PERSONAL (CRUD Inventario)
-    // Mis Xuxemons capturados
+    // COLECCIÓN Y MOCHILA PERSONAL
     Route::get('/my-xuxemons', [XuxemonController::class, 'myCollection']);
-    
-    // Mi inventario real (slots)
-    Route::get('/my-inventory', [InventoryController::class, 'index']); // Llistar
-    Route::post('/my-inventory/use/{id}', [InventoryController::class, 'useItem']); // Modificar (Gastar)
-    Route::delete('/my-inventory/{id}', [InventoryController::class, 'destroy']); // Eliminar (Tirar)
+    Route::get('/my-inventory', [InventoryController::class, 'index']);
+    Route::post('/my-inventory/use/{id}', [InventoryController::class, 'useItem']);
+    Route::delete('/my-inventory/{id}', [InventoryController::class, 'destroy']);
 
-    // ========== NUEVAS RUTAS DE CONFIGURACIÓN ==========
-    // Configuración del juego (solo admin)
+    // ========== CONFIGURACIÓN ==========
     Route::get('/admin/config', [AdminController::class, 'getConfig']);
     Route::put('/admin/config', [AdminController::class, 'updateConfig']);
     Route::post('/evolve/{id}', [XuxemonController::class, 'evolve']);
+    
+    // ========== AMIGOS ==========
+    Route::get('/friends/search', [App\Http\Controllers\API\FriendController::class, 'search']);
+    Route::get('/friends', [App\Http\Controllers\API\FriendController::class, 'friendsList']);
+    Route::get('/friends/pending', [App\Http\Controllers\API\FriendController::class, 'pendingRequests']);
+    Route::get('/friends/pending/count', [App\Http\Controllers\API\FriendController::class, 'pendingCount']);
+    Route::post('/friends/request', [App\Http\Controllers\API\FriendController::class, 'sendRequest']);
+    Route::put('/friends/accept/{id}', [App\Http\Controllers\API\FriendController::class, 'acceptRequest']);
+    Route::delete('/friends/reject/{id}', [App\Http\Controllers\API\FriendController::class, 'rejectRequest']);
+    Route::delete('/friends/remove/{id}', [App\Http\Controllers\API\FriendController::class, 'removeFriend']);
 });

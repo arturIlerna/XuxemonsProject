@@ -114,6 +114,7 @@
   transition: all 0.3s;
   font-size: 1.1rem;
   font-weight: 500;
+  position: relative;
 }
 
 .nav-item:hover {
@@ -131,6 +132,22 @@
 
 .nav-icon {
   font-size: 1.3rem;
+}
+
+/* Badge para el contador de amigos */
+.badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #e74c3c;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: bold;
+  min-width: 18px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 /* =========================================
