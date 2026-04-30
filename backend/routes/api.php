@@ -59,7 +59,8 @@ Route::middleware(['auth:api'])->group(function () {
     // ========== CONFIGURACIÓN ==========
     Route::get('/admin/config', [AdminController::class, 'getConfig']);
     Route::put('/admin/config', [AdminController::class, 'updateConfig']);
-    Route::post('/evolve/{id}', [XuxemonController::class, 'evolve']);
+    Route::post('/evolve/{id}/feed', [XuxemonController::class, 'feed']);
+    Route::post('/evolve/{id}/heal', [XuxemonController::class, 'aplicarVacuna']);
     
     // ========== AMIGOS ==========
     Route::get('/friends/search', [App\Http\Controllers\API\FriendController::class, 'search']);

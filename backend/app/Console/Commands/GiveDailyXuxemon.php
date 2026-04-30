@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Xuxemon;
 use App\Models\UserXuxemon;
 use App\Models\Configuracion;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class GiveDailyXuxemon extends Command
 {
@@ -38,17 +40,30 @@ class GiveDailyXuxemon extends Command
         foreach ($users as $user) {
             $randomXuxemon = $xuxemons->random();
             
+            // Creem el Xuxemon i ens assegurem que estigui sa i a 0 xuxes
             UserXuxemon::create([
                 'user_id' => $user->id,
                 'xuxemon_id' => $randomXuxemon->id,
                 'size' => 'Pequeño',
-                'obtained_at' => now()
+                'xuxes_comidas' => 0, 
+                'enfermedad' => null  
+            ]);
+            
+            // Guardem l'historial de la recompensa
+            DB::table('recompensas_historial')->insert([
+                'user_id' => $user->id,
+                'tipo' => 'xuxemon',
+                'cantidad' => 1,
+                'xuxemon_id' => $randomXuxemon->id,
+                'fecha' => now()->toDateString(),
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
             
             $entregados++;
         }
         
         $this->info("✅ Se entregó 1 Xuxemon a {$entregados} usuarios");
-        \Log::info("Xuxemon diario entregado a {$entregados} usuarios a las " . now());
+        Log::info("Xuxemon diario entregado a {$entregados} usuarios a las " . now());
     }
 }

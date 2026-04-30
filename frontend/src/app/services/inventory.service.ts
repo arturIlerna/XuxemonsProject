@@ -1,68 +1,71 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
-// Definimos cómo es un objeto del juego
 export interface Item {
   id: number;
   name: string;
-  type: 'xuxe' | 'vacuna'; // Diferenciamos apilables de no apilables
-  icon: string; // Un emoji o ruta de imagen para que quede chulo
+  type: 'apilable' | 'no apilable'; // Exactament com a la base de dades
+  icon?: string; // Opcional
 }
 
-// Definimos cómo es un hueco de la mochila
 export interface Slot {
-  id: number; // Del 0 al 19 (los 20 huecos)
-  item: Item | null; // Puede tener un objeto o estar vacío (null)
-  quantity: number; // Cantidad apilada
+  id: number; // Del 0 al 19 (los 20 huecos de la rúbrica[cite: 2])
+  item: Item | null; 
+  quantity: number; 
+  user_item_id?: number; // CRUCIAL: El ID real de la tabla user_items en Laravel
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class InventoryService {
-  // 1. Creamos la mochila vacía con exactamente 20 huecos (Grid 4x5)
+  private apiUrl = 'http://localhost:8000/api'; // Ajusta si tu API tiene otra URL
+
+  // 1. Creamos la mochila vacía con exactamente 20 huecos (Grid 4x5)[cite: 2]
   private initialSlots: Slot[] = Array.from({ length: 20 }, (_, index) => ({
     id: index,
     item: null,
     quantity: 0
   }));
 
-  // 2. Nuestra "Emisora de Radio" para la mochila
   private inventorySubject = new BehaviorSubject<Slot[]>(this.initialSlots);
   public inventory$ = this.inventorySubject.asObservable();
 
-  constructor() {
-    // Metemos unos datos de prueba 
-    // las reglas de la rúbrica (apilables x5, vacunas x1)
-    this.cargarDatosDePrueba();
+  constructor(private http: HttpClient) {
+    this.cargarInventarioReal();
   }
 
-  private cargarDatosDePrueba() {
-    // Hacemos una copia de la mochila vacía
-    const slots = [...this.initialSlots];
-    
-    // Hueco 0: Chuches (Apilables, le ponemos 3)
-    slots[0] = { 
-      id: 0, 
-      item: { id: 1, name: 'Xuxe de Fuerza', type: 'xuxe', icon: '🍬' }, 
-      quantity: 3 
-    };
-    
-    // Hueco 1: Chuches al máximo (Apilables, tope 5)
-    slots[1] = { 
-      id: 1, 
-      item: { id: 2, name: 'Xuxe de Vida', type: 'xuxe', icon: '🍭' }, 
-      quantity: 5 
-    };
+  // Sustituimos los datos de prueba por la BD real
+  cargarInventarioReal() {
+    this.http.get<any[]>(`${this.apiUrl}/my-inventory`).subscribe({
+      next: (data) => {
+        // AFEGIM ": Slot[]" AQUÍ 👇 PERQUÈ TS SÀPIGA QUE POT SER NULL O UN ITEM
+        const slots: Slot[] = [...this.initialSlots.map(slot => ({...slot, item: null, quantity: 0, user_item_id: undefined}))];
+        
+        data.forEach((userItem, index) => {
+          if (index < 20) {
+            slots[index] = {
+              id: index,
+              item: { 
+                id: userItem.id, 
+                name: userItem.name, 
+                type: userItem.type as 'apilable' | 'no apilable', 
+                icon: userItem.type === 'apilable' ? '🍬' : '💉' 
+              }, 
+              quantity: userItem.quantity,
+              user_item_id: userItem.id 
+            };
+          }
+        });
+        
+        this.inventorySubject.next(slots);
+      },
+      error: (err) => console.error('Error carregant l\'inventari:', err)
+    });
+  }
 
-    // Hueco 2: Vacuna (NO apilable, máximo 1)
-    slots[2] = { 
-      id: 2, 
-      item: { id: 3, name: 'Vacuna Curativa', type: 'vacuna', icon: '💉' }, 
-      quantity: 1 
-    };
-
-    // Emitimos la mochila con estos 3 objetos y 17 huecos vacíos
-    this.inventorySubject.next(slots);
+  getInventory(): Observable<Slot[]> {
+    return this.inventory$;
   }
 }

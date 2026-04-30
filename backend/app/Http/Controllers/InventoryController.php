@@ -10,6 +10,7 @@ class InventoryController extends Controller
     // LLISTAR: Ver la mochila 
     public function index()
     {
+        // Consultem directament, ja que 'name', 'type' i 'quantity' són a la mateixa taula
         $inventory = UserItem::where('user_id', auth()->id())->orderBy('slot')->get();
         return response()->json($inventory, 200);
     }
@@ -23,7 +24,7 @@ class InventoryController extends Controller
             return response()->json(['message' => 'Objeto no encontrado'], 404);
         }
 
-        // Si hay más de uno, restamos. Si solo queda uno, eliminamos el slot.
+        // Si hi ha més d'un, restem a 'quantity'. Si només en queda un, eliminem l'slot.
         if ($item->quantity > 1) {
             $item->quantity -= 1;
             $item->save();

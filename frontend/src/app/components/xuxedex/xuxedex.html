@@ -27,6 +27,14 @@
     </div>
   </header>
 
+  <!-- ALERTES GLOBALS -->
+  @if (mensajeError && !modalAlimentarVisible && !modalCurarVisible) {
+    <div class="alert error" style="margin-bottom: 20px; text-align: center;">
+      {{ mensajeError }}
+    </div>
+  }
+
+  <!-- FILTRES (Només Catàleg) -->
   @if (viewMode === 'catalogo') {
     <section class="filters-section">
       <div class="search-box">
@@ -68,6 +76,7 @@
     </section>
   }
 
+  <!-- ESTATS DE CÀRREGA -->
   @if (loading) {
     <div class="loading">Cargando Xuxemons...</div>
   }
@@ -82,18 +91,23 @@
     </div>
   }
 
+  <!-- GRAELLA DE XUXEMONS -->
   @if (!loading && !error && getCurrentList().length > 0) {
     <section class="xuxedex-section">
       <div class="xuxemons-grid">
         @for (xuxemon of getCurrentList(); track xuxemon.id) {
           <article class="xuxemon-card">
+            
             <header class="card-header" [style.background]="getTypeColor(xuxemon.type)">
               <span class="xuxemon-type-badge">{{ xuxemon.type }}</span>
-              <span class="xuxemon-level">Nv. {{ xuxemon.level }}</span>
+              <span class="xuxemon-level">Nv. {{ xuxemon.level || 1 }}</span>
             </header>
             
+            <!-- Imatge (amb classe d'animació preparada) -->
             <div class="card-image">
-              <div class="image-placeholder" [style.background]="getTypeGradient(xuxemon.type)">
+              <div class="image-placeholder" 
+                   [style.background]="getTypeGradient(xuxemon.type)"
+                   [class.evolving-animation]="xuxemon.id === evolvingXuxemonId">
                 <span class="xuxemon-icon">✨</span>
               </div>
             </div>
@@ -109,28 +123,142 @@
                   <span class="badge badge-size">{{ getSizeText(xuxemon.size) }}</span>
                 }
               </div>
+
+              <!-- LÒGICA NIVELL 3: Salut i Progrés -->
+              @if (viewMode === 'mis-xuxemons') {
+                <div class="xuxemon-stats" style="margin-top: 15px; text-align: center;">
+                  <p class="progress-text" style="margin-bottom: 8px; color: #555;">
+                    Progreso: <strong>{{ xuxemon.xuxes_comidas || 0 }} Xuxes</strong>
+                  </p>
+                  @if (xuxemon.enfermedad) {
+                    <div class="status-badge sick" style="background: #fff3cd; color: #856404; padding: 4px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem;">
+                      ⚠️ {{ xuxemon.enfermedad }}
+                    </div>
+                  } @else {
+                    <div class="status-badge healthy" style="background: #d4edda; color: #155724; padding: 4px 10px; border-radius: 12px; font-weight: bold; font-size: 0.85rem;">
+                      ✅ Sano
+                    </div>
+                  }
+                </div>
+              }
             </div>
             
-            <footer class="card-footer">
-              @if (viewMode === 'mis-xuxemons') {
-                <button 
-                  class="btn-evolve" 
-                  (click)="evolveSize(xuxemon, $event)" 
-                  [disabled]="xuxemon.size === 'Grande'"
-                >
-                  @if (xuxemon.size === 'Pequeño') {
-                    Evolucionar a Mediano
-                  } @else if (xuxemon.size === 'Mediano') {
-                    Evolucionar a Grande
-                  } @else {
-                    Tamaño máximo
-                  }
-                </button>
-              }
-            </footer>
+            <!-- LÒGICA NIVELL 3: Botons d'Acció -->
+            @if (viewMode === 'mis-xuxemons') {
+              <footer class="card-footer" style="padding: 15px;">
+                <div class="action-buttons" style="display: flex; gap: 10px; width: 100%;">
+                  <button 
+                    class="btn-action btn-feed" 
+                    style="flex: 1; padding: 10px; border-radius: 20px; border: none; font-weight: bold; background: #f39c12; color: white; cursor: pointer;"
+                    (click)="abrirModalAlimentar(xuxemon)" 
+                    [disabled]="xuxemon.enfermedad === 'Atracón'">
+                    🍗 Alimentar
+                  </button>
+                  <button 
+                    class="btn-action btn-heal" 
+                    style="flex: 1; padding: 10px; border-radius: 20px; border: none; font-weight: bold; background: #3498db; color: white; cursor: pointer;"
+                    (click)="abrirModalCurar(xuxemon)" 
+                    [disabled]="!xuxemon.enfermedad">
+                    💉 Curar
+                  </button>
+                </div>
+              </footer>
+            }
           </article>
         }
       </div>
     </section>
+  }
+
+  <!-- =============================== -->
+  <!-- MODALS DEL NIVELL 3             -->
+  <!-- =============================== -->
+
+  <!-- MODAL ALIMENTAR -->
+  @if (modalAlimentarVisible) {
+    <div class="modal-overlay">
+      <div class="modal-content">
+        <header class="modal-header">
+          <h2>Alimentar a {{ xuxemonSeleccionado?.name }}</h2>
+          <button (click)="cerrarModales()" class="btn-close">×</button>
+        </header>
+        
+        <div class="modal-body">
+          @if (mensajeExito) { <div class="alert success">{{ mensajeExito }}</div> }
+          @if (mensajeError) { <div class="alert error">{{ mensajeError }}</div> }
+
+          <div class="form-group">
+            <label>Tria la teva Xuxe de la motxilla:</label>
+            <select [(ngModel)]="itemSeleccionadoId" class="form-control">
+              <option [ngValue]="null" disabled>-- Selecciona --</option>
+              @for (xuxe of xuxesDisponibles; track xuxe.user_item_id) {
+                <option [ngValue]="xuxe.user_item_id">
+                  {{ xuxe.item?.icon || '🍬' }} {{ xuxe.item?.name }} (Disp: {{ xuxe.quantity }})
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Quantitat a donar:</label>
+            <input type="number" [(ngModel)]="cantidadAlimentar" min="1" class="form-control">
+          </div>
+
+          @if (itemSeleccionadoId && cantidadAlimentar > 0) {
+            <div class="preview-box">
+              <p><strong>Preview:</strong></p>
+              <p class="highlight-text">{{ calcularEvolucionPreview() }}</p>
+            </div>
+          }
+        </div>
+
+        <footer class="modal-footer">
+          <button (click)="cerrarModales()" class="btn-cancel">Cancel·lar</button>
+          <button (click)="alimentar()" [disabled]="!itemSeleccionadoId || cantidadAlimentar < 1" class="btn-confirm">
+            Confirmar
+          </button>
+        </footer>
+      </div>
+    </div>
+  }
+
+  <!-- MODAL CURAR -->
+  @if (modalCurarVisible) {
+    <div class="modal-overlay">
+      <div class="modal-content">
+        <header class="modal-header">
+          <h2>Curar a {{ xuxemonSeleccionado?.name }}</h2>
+          <button (click)="cerrarModales()" class="btn-close">×</button>
+        </header>
+
+        <div class="modal-body">
+          @if (mensajeExito) { <div class="alert success">{{ mensajeExito }}</div> }
+          @if (mensajeError) { <div class="alert error">{{ mensajeError }}</div> }
+
+          <div class="alert warning">
+            Símptomes actuals: <strong>{{ xuxemonSeleccionado?.enfermedad }}</strong>
+          </div>
+
+          <div class="form-group">
+            <label>Tria la Vacuna de la motxilla:</label>
+            <select [(ngModel)]="itemSeleccionadoId" class="form-control">
+              <option [ngValue]="null" disabled>-- Selecciona --</option>
+              @for (vacuna of vacunasDisponibles; track vacuna.user_item_id) {
+                <option [ngValue]="vacuna.user_item_id">
+                  {{ vacuna.item?.icon || '💉' }} {{ vacuna.item?.name }} (Disp: {{ vacuna.quantity }})
+                </option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <footer class="modal-footer">
+          <button (click)="cerrarModales()" class="btn-cancel">Cancel·lar</button>
+          <button (click)="curar()" [disabled]="!itemSeleccionadoId" class="btn-confirm">
+            💉 Aplicar Vacuna
+          </button>
+        </footer>
+      </div>
+    </div>
   }
 </main>

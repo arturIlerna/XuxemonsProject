@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 use App\Models\User;
 use App\Models\UserItem;
 use App\Models\Configuracion;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class GiveDailyXuxes extends Command
 {
@@ -36,52 +38,59 @@ class GiveDailyXuxes extends Command
         }
         
         $this->info("✅ Se entregaron {$cantidadXuxes} Xuxes a {$entregados} usuarios");
-        \Log::info("Xuxes diarias entregadas a {$entregados} usuarios a las " . now());
+        Log::info("Xuxes diarias entregadas a {$entregados} usuarios a las " . now());
     }
     
     private function giveXuxesToUser($userId, $cantidad)
     {
-        $name = 'Xuxe';
-        $quantityToGive = $cantidad;
+        // Llista de xuxes possibles basades en el nostre ItemSeeder
+        $tiposXuxes = ['Xuxe de Maduixa', 'Xuxe de Menta', 'Xuxe de Llimona'];
+        $name = $tiposXuxes[array_rand($tiposXuxes)]; // Tria una a l'atzar
         
-        // Buscar slots existentes con menos de 5
-        $existingSlots = UserItem::where('user_id', $userId)
+        // 1. Busquem si l'usuari ja té aquesta Xuxe a la motxilla
+        $existingItem = UserItem::where('user_id', $userId)
             ->where('name', $name)
-            ->where('type', 'apilable')
-            ->where('quantity', '<', 5)
-            ->get();
+            ->first();
             
-        foreach ($existingSlots as $slot) {
-            if ($quantityToGive <= 0) break;
-            $spaceLeft = 5 - $slot->quantity;
-            if ($quantityToGive <= $spaceLeft) {
-                $slot->quantity += $quantityToGive;
-                $slot->save();
-                $quantityToGive = 0;
-            } else {
-                $slot->quantity = 5;
-                $slot->save();
-                $quantityToGive -= $spaceLeft;
-            }
-        }
-        
-        // Crear nuevos slots si es necesario
-        if ($quantityToGive > 0) {
+        if ($existingItem) {
+            // Si ja la té, apilem la quantitat sencera en aquell mateix slot
+            $existingItem->quantity += $cantidad;
+            $existingItem->save();
+        } else {
+            // 2. Si no la té, busquem el primer forat lliure del 0 al 19
             $occupiedSlots = UserItem::where('user_id', $userId)->pluck('slot')->toArray();
-            for ($i = 1; $i <= 20 && $quantityToGive > 0; $i++) {
+            $freeSlot = null;
+
+            for ($i = 0; $i <= 19; $i++) {
                 if (!in_array($i, $occupiedSlots)) {
-                    $giveNow = min(5, $quantityToGive);
-                    UserItem::create([
-                        'user_id' => $userId,
-                        'name' => $name,
-                        'type' => 'apilable',
-                        'quantity' => $giveNow,
-                        'slot' => $i
-                    ]);
-                    $occupiedSlots[] = $i;
-                    $quantityToGive -= $giveNow;
+                    $freeSlot = $i;
+                    break;
                 }
             }
+
+            // 3. Si hi ha un slot lliure, creem l'objecte allà
+            if ($freeSlot !== null) {
+                UserItem::create([
+                    'user_id' => $userId,
+                    'name' => $name,
+                    'type' => 'apilable',
+                    'quantity' => $cantidad,
+                    'slot' => $freeSlot
+                ]);
+            } else {
+                Log::warning("L'usuari ID {$userId} té la motxilla plena (20 slots ocupats) y no ha rebut la recompensa diària.");
+            }
         }
+
+        // Guardem l'historial de la recompensa
+        DB::table('recompensas_historial')->insert([
+            'user_id' => $userId,
+            'tipo' => 'xuxes',
+            'cantidad' => $cantidad,
+            'xuxemon_id' => null,
+            'fecha' => now()->toDateString(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }

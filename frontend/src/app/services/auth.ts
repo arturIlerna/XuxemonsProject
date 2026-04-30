@@ -139,4 +139,19 @@ export class Auth {
   evolveXuxemon(userXuxemonId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/evolve/${userXuxemonId}`, {});
   }
+
+  // ========== ALIMENTAR XUXEMON ==========
+  feedXuxemon(userXuxemonId: number, userItemId: number, cantidad: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/evolve/${userXuxemonId}/feed`, {
+      user_item_id: userItemId,
+      cantidad: cantidad
+    });
+  }
+
+  // ========== CURAR XUXEMON ==========
+  healXuxemon(userXuxemonId: number, userItemId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/evolve/${userXuxemonId}/heal`, {
+      user_item_id: userItemId
+    });
+  }
 }
