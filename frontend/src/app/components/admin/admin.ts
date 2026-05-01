@@ -1,6 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef, signal } from '@angular/core'; // Añadido signal
+import { Component, OnInit, ChangeDetectorRef, signal } from '@angular/core'; 
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // <-- MUY IMPORTANTE AÑADIR ESTO para los ngModel
+import { FormsModule } from '@angular/forms'; 
 import { Router } from '@angular/router';
 import { Auth } from '../../services/auth'; 
 
@@ -16,28 +16,38 @@ export interface UserData {
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule], // <-- NO OLVIDAR FormsModule
+  imports: [CommonModule, FormsModule], 
   templateUrl: './admin.html',
   styleUrl: './admin.css'
 })
 export class Admin implements OnInit {
   
   users: UserData[] = [];
-  availableItems: any[] = []; // Nuestro catálogo real de chuches de Laravel
   
-  // Variables para la selección global del admin
-  selectedItemName: string = '';
-  selectedQuantity: number = 1;
+  // Listas separadas para Chuches y Vacunas
+  chuchesList: any[] = []; 
+  vacunasList: any[] = []; 
+  
+  // Variables para la selección de Chuches
+  selectedChucheName: string = '';
+  selectedChucheQuantity: number = 1;
+
+  // Variables para la selección de Vacunas
+  selectedVacunaName: string = '';
+  selectedVacunaQuantity: number = 1;
 
   // Señales para el modal de advertencia de Mochila Llena
   public showWarningModal = signal<boolean>(false);
   public warningMessage = signal<string>('');
 
-  // ========== NUEVO: Configuraciones del Juego ==========
+  // ========== CONFIGURACIONES DEL JUEGO ==========
   config = {
     hora_xuxes_diarias: '08:00',
     cantidad_xuxes_diarias: 10,
-    hora_xuxemon_diario: '08:00'
+    hora_xuxemon_diario: '08:00',
+    probabilidad_infeccion: 30, // % de probabilidad por defecto
+    xuxes_mediano: 3,           // Xuxes necesarias por defecto
+    xuxes_grande: 5             // Xuxes necesarias por defecto
   };
   
   mensajeConfig: string = '';
@@ -51,8 +61,8 @@ export class Admin implements OnInit {
   
   ngOnInit() {
     this.loadUsers();
-    this.loadItems(); // Cargamos el catálogo de chuches
-    this.loadConfiguraciones(); // ========== NUEVO: Cargar configuraciones
+    this.loadItems(); 
+    this.loadConfiguraciones(); 
   }
 
   loadUsers() {
@@ -67,8 +77,6 @@ export class Admin implements OnInit {
         } else {
           this.users = Object.values(data); 
         }
-
-        console.log('✅ ARRAY FINAL PARA EL HTML:', this.users);
         this.cdr.detectChanges(); 
       },
       error: (err) => {
@@ -77,23 +85,29 @@ export class Admin implements OnInit {
     });
   }
 
-  // --- NUEVO: Cargar el catálogo de Chuches ---
+  // --- Cargar el catálogo y separar Chuches de Vacunas ---
   loadItems() {
     this.authService.getItems().subscribe({
       next: (items: any[]) => {
-        this.availableItems = items;
+        // Asumimos que las chuches son 'apilable' y las vacunas 'no apilable'
+        this.chuchesList = items.filter(item => item.type === 'apilable');
+        this.vacunasList = items.filter(item => item.type === 'no apilable');
+        
         // Seleccionamos la primera por defecto si existen
-        if (items.length > 0) {
-          this.selectedItemName = items[0].name;
+        if (this.chuchesList.length > 0) {
+          this.selectedChucheName = this.chuchesList[0].name;
+        }
+        if (this.vacunasList.length > 0) {
+          this.selectedVacunaName = this.vacunasList[0].name;
         }
       },
       error: (err) => {
-        console.error('❌ Error al cargar el catálogo de chuches:', err);
+        console.error('❌ Error al cargar el catálogo de items:', err);
       }
     });
   }
 
-  // ========== NUEVO: Cargar configuraciones del juego ==========
+  // ========== Cargar configuraciones del juego ==========
   loadConfiguraciones() {
     this.authService.getConfiguraciones().subscribe({
       next: (data: any) => {
@@ -105,6 +119,12 @@ export class Admin implements OnInit {
               this.config.cantidad_xuxes_diarias = JSON.parse(item.valor);
             } else if (item.clave === 'hora_xuxemon_diario') {
               this.config.hora_xuxemon_diario = JSON.parse(item.valor);
+            } else if (item.clave === 'probabilidad_infeccion') {
+              this.config.probabilidad_infeccion = JSON.parse(item.valor);
+            } else if (item.clave === 'xuxes_mediano') {
+              this.config.xuxes_mediano = JSON.parse(item.valor);
+            } else if (item.clave === 'xuxes_grande') {
+              this.config.xuxes_grande = JSON.parse(item.valor);
             }
           });
         }
@@ -115,7 +135,7 @@ export class Admin implements OnInit {
     });
   }
 
-  // ========== NUEVO: Guardar configuraciones ==========
+  // ========== Guardar configuraciones ==========
   guardarConfiguracion() {
     this.authService.updateConfiguraciones(this.config).subscribe({
       next: (res: any) => {
@@ -152,34 +172,59 @@ export class Admin implements OnInit {
     }
   }
 
-  // Regalar Chuches (Actualizado)
+  // Regalar Chuches
   darXuxes(user: UserData) {
-    // Validaciones previas
-    if (!this.selectedItemName) {
-      alert('⚠️ Por favor, selecciona una chuche del catálogo arriba.');
+    if (!this.selectedChucheName) {
+      alert('⚠️ Por favor, selecciona una chuche del catálogo.');
       return;
     }
     
-    if (this.selectedQuantity <= 0) {
+    if (this.selectedChucheQuantity <= 0) {
       alert('⚠️ Por favor, introduce un número válido mayor que 0.');
       return;
     }
 
-    // Ya no usamos prompt(), cogemos los datos del menú superior que hemos creado
-    this.authService.giveXuxes(user.id, this.selectedItemName, this.selectedQuantity).subscribe({
+    this.authService.giveXuxes(user.id, this.selectedChucheName, this.selectedChucheQuantity).subscribe({
       next: (res: any) => {
         if (res.discarded) {
-          // Si Laravel nos chiva que se han tirado chuches a la basura, abrimos el Modal Rojo
           this.warningMessage.set(res.message);
           this.showWarningModal.set(true);
         } else {
-          // Si ha cabido todo, damos el OK genérico
           alert(`¡Boom! 🍬 ${res.message}`);
         }
       },
       error: (err) => {
         console.error(err);
         alert('❌ Error al dar chuches. Comprueba la consola.');
+      }
+    });
+  }
+
+  // Regalar Vacunas (NUEVO)
+  darVacuna(user: UserData) {
+    if (!this.selectedVacunaName) {
+      alert('⚠️ Por favor, selecciona una vacuna del catálogo.');
+      return;
+    }
+    
+    if (this.selectedVacunaQuantity <= 0) {
+      alert('⚠️ Por favor, introduce un número válido mayor que 0.');
+      return;
+    }
+
+    // Llamaremos a giveVacunas en el AuthService
+    this.authService.giveVacunas(user.id, this.selectedVacunaName, this.selectedVacunaQuantity).subscribe({
+      next: (res: any) => {
+        if (res.discarded) {
+          this.warningMessage.set(res.message);
+          this.showWarningModal.set(true);
+        } else {
+          alert(`¡Perfecto! 💉 ${res.message}`);
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        alert('❌ Error al dar la vacuna. Comprueba la consola.');
       }
     });
   }

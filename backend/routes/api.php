@@ -44,6 +44,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/users', [AuthController::class, 'index']);
     Route::post('/admin/give-xuxemon', [AdminController::class, 'giveRandomXuxemon']);
     Route::post('/admin/give-xuxes', [AdminController::class, 'giveXuxes']);
+    Route::post('/admin/give-vacunas', [AdminController::class, 'giveVacunas']); // <-- NOVA RUTA
 
     // CRUD Global de Especies Xuxemon
     Route::post('/xuxemons', [XuxemonController::class, 'store']);
@@ -59,7 +60,8 @@ Route::middleware(['auth:api'])->group(function () {
     // ========== CONFIGURACIÓN ==========
     Route::get('/admin/config', [AdminController::class, 'getConfig']);
     Route::put('/admin/config', [AdminController::class, 'updateConfig']);
-    Route::post('/evolve/{id}', [XuxemonController::class, 'evolve']);
+    Route::post('/evolve/{id}/feed', [XuxemonController::class, 'feed']);
+    Route::post('/evolve/{id}/heal', [XuxemonController::class, 'aplicarVacuna']);
     
     // ========== AMIGOS ==========
     Route::get('/friends/search', [App\Http\Controllers\API\FriendController::class, 'search']);
