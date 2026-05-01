@@ -157,55 +157,11 @@
   background-color: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(10px);
   border-radius: 20px;
-  padding: 2rem;
+  padding: 3rem; /* Añadimos más padding para que respire */
   border: 1px solid rgba(255, 255, 255, 0.5);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-}
-
-/* =========================================
-   ESTADÍSTICAS DEL JUGADOR
-   ========================================= */
-.player-stats {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 15px;
-  flex-wrap: wrap;
-}
-
-.stat-item {
-  display: flex;
+  display: flex; /* Añadimos flex para centrar verticalmente si hiciera falta */
   align-items: center;
-  gap: 10px;
-  flex: 1;
-  min-width: 200px;
-}
-
-.stat-item .stat-label {
-  color: #2c3e50;
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.stat-value {
-  font-size: 1.3rem;
-  font-weight: bold;
-  padding: 6px 16px;
-  border-radius: 30px;
-  background-color: rgba(255, 255, 255, 0.5);
-  color: #2c3e50;
-}
-
-.stat-value.caramel {
-  background-color: rgba(243, 156, 18, 0.25);
-  color: #b16700;
-}
-
-.stat-value.level {
-  background-color: rgba(46, 204, 113, 0.25);
-  color: #1e7e34;
 }
 
 /* =========================================
@@ -214,28 +170,30 @@
 .dashboard-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: 3rem; /* Aumentado el gap para que las dos tarjetas estén más separadas y queden más elegantes */
+  width: 100%;
 }
 
 .stat-card {
   background: rgba(255, 255, 255, 0.5);
   border-radius: 15px;
-  padding: 2rem;
+  padding: 2.5rem; /* Un poco más de padding interior para que la tarjeta sea más grandecita */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  justify-content: center; /* Centramos el contenido dentro de la tarjeta */
+  gap: 2rem;
   transition: all 0.3s ease;
 }
 
 .stat-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.7); /* Un pelín más opaco al pasar el ratón */
 }
 
 .stat-icon {
-  font-size: 3.5rem;
+  font-size: 4.5rem; /* Iconos más grandes para que destaquen más */
   min-width: 80px;
   text-align: center;
 }
@@ -245,118 +203,27 @@
 }
 
 .stat-info h3 {
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #7f8c8d;
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
 .stat-number {
-  font-size: 2.2rem;
-  font-weight: 700;
+  font-size: 3.5rem; /* Números más gordos y llamativos */
+  font-weight: 800;
   color: #3498db;
   display: block;
   margin-bottom: 0.5rem;
+  line-height: 1;
 }
 
 .stat-label {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: #95a5a6;
   line-height: 1.4;
-}
-
-/* =========================================
-   TARJETA DEL XUXEMON
-   ========================================= */
-.xuxemon-card {
-  text-align: center;
-  padding: 2rem;
-  background-color: rgba(255, 255, 255, 0.25);
-  border-radius: 20px;
-}
-
-.xuxemon-name {
-  color: #2c3e50;
-  font-size: 2.8rem;
-  margin-bottom: 0.5rem;
-  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.3);
-  font-weight: 700;
-}
-
-.xuxemon-type {
-  margin-bottom: 2rem;
-}
-
-.type-badge {
-  padding: 8px 30px;
-  border-radius: 40px;
-  font-weight: 600;
-  color: white;
-  font-size: 1rem;
-  letter-spacing: 1px;
-}
-
-.type-badge.ground {
-  background-color: #cd7b4a;
-  box-shadow: 0 4px 10px rgba(205, 123, 74, 0.3);
-}
-
-.xuxemon-image {
-  margin: 2rem 0;
-  display: flex;
-  justify-content: center;
-}
-
-.image-placeholder {
-  width: 200px;
-  height: 200px;
-  background: linear-gradient(135deg, #f7d44c, #f5a623);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 10px 30px rgba(247, 212, 76, 0.3);
-  border: 4px solid white;
-}
-
-.image-placeholder span {
-  font-size: 5rem;
-  color: white;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* =========================================
-   ATAQUE ESPECIAL
-   ========================================= */
-.special-attack {
-  margin-top: 2rem;
-}
-
-.special-attack h3 {
-  color: #2c3e50;
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-weight: 600;
-}
-
-.attack-card {
-  background: linear-gradient(135deg, #a8c0ff 0%, #8ec5fc 100%);
-  padding: 1.5rem;
-  border-radius: 15px;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-.attack-name {
-  color: #2c3e50;
-  font-size: 1.3rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
 /* =========================================
@@ -373,27 +240,81 @@
 
   .content-area {
     order: 1;
+    padding: 1.5rem;
   }
 
-  .player-stats {
-    flex-direction: column;
-    gap: 1rem;
+  .dashboard-stats {
+    gap: 1.5rem;
   }
 
-  .xuxemon-name {
-    font-size: 2rem;
-  }
-
-  .image-placeholder {
-    width: 150px;
-    height: 150px;
-  }
-
-  .image-placeholder span {
-    font-size: 3rem;
-  }
-
-  .stat-item {
-    justify-content: space-between;
+  .stat-card {
+    padding: 1.5rem;
   }
 }
+
+/* =========================================
+   POP-UP RECOMPENSAS DIARIAS
+   ========================================= */
+.reward-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.reward-modal {
+  background: linear-gradient(180deg, #ffffff 0%, #f0f8ff 100%);
+  padding: 2.5rem;
+  border-radius: 24px;
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3), inset 0 0 0 4px #f1c40f;
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.reward-header {
+  display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 10px;
+}
+
+.reward-header h2 {
+  color: #d35400; font-size: 1.8rem; text-transform: uppercase; margin: 0; text-shadow: 1px 1px 0px #f39c12;
+}
+
+.sparkles { font-size: 1.5rem; animation: twinkle 1.5s infinite alternate; }
+
+.reward-subtitle { color: #7f8c8d; font-size: 1.1rem; margin-bottom: 2rem; }
+
+.rewards-container { display: flex; flex-direction: column; gap: 15px; margin-bottom: 2rem; }
+
+.reward-item {
+  background: white; border-radius: 16px; padding: 15px;
+  display: flex; align-items: center; gap: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;
+}
+
+.reward-icon { font-size: 3rem; }
+
+.reward-text { display: flex; flex-direction: column; text-align: left; }
+
+.reward-amount { color: #27ae60; font-weight: 800; font-size: 1.2rem; }
+.reward-name { color: #2c3e50; font-weight: 600; font-size: 1.1rem; }
+
+.btn-claim {
+  background: linear-gradient(to bottom, #f1c40f, #f39c12);
+  color: white; border: none; padding: 15px 30px; font-size: 1.2rem;
+  font-weight: bold; border-radius: 50px; cursor: pointer;
+  box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4); transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%; text-transform: uppercase; letter-spacing: 1px;
+}
+
+.btn-claim:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 20px rgba(243, 156, 18, 0.6); }
+
+/* Animaciones */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { 0% { opacity: 0; transform: scale(0.7); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes twinkle { from { opacity: 0.5; transform: scale(0.8); } to { opacity: 1; transform: scale(1.2); } }
+@keyframes bounce-animation { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes pulse-animation { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }

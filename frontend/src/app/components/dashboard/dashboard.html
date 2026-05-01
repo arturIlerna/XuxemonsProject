@@ -6,6 +6,7 @@
         <h1>Xuxemons</h1>
       </div>
       <div class="user-section">
+        <!-- Mostrará el #nombre0000 -->
         <span class="username">{{ userName }}</span>
         <button (click)="logout()" class="btn-logout">Cerrar sesión</button>
       </div>
@@ -15,52 +16,32 @@
   <!-- CONTENEDOR PRINCIPAL -->
   <div class="main-container">
     <!-- SIDEBAR -->
-   <div class="sidebar">
-  <nav class="nav-menu">
-    <a routerLink="/inventory" class="nav-item">
-      <span class="nav-icon">🎒</span>
-      Mochila
-    </a>
-    <a routerLink="/xuxedex" class="nav-item">
-      <span class="nav-icon">📚</span>
-      Xuxedex
-    </a>
-    <a routerLink="/battle" class="nav-item">
-      <span class="nav-icon">⚔️</span>
-      Batalla
-    </a>
-    <a routerLink="/profile" class="nav-item">
-      <span class="nav-icon">👤</span>
-      Perfil
-    </a>
-    <a routerLink="/chat" class="nav-item">
-      <span class="nav-icon">💬</span>
-      Chat
-    </a>
-    <a routerLink="/friends" class="nav-item">
-      <span class="nav-icon">👥</span>
-      Amigos
-      @if (pendingCount$ | async; as count) {
-        <span class="badge">{{ count }}</span>
-      }
-    </a>
-  </nav>
-</div>
+    <div class="sidebar">
+      <nav class="nav-menu">
+        <a routerLink="/inventory" class="nav-item">
+          <span class="nav-icon">🎒</span>
+          Mochila
+        </a>
+        <a routerLink="/xuxedex" class="nav-item">
+          <span class="nav-icon">📚</span>
+          Xuxedex
+        </a>
+        <a routerLink="/profile" class="nav-item">
+          <span class="nav-icon">👤</span>
+          Perfil
+        </a>
+        <a routerLink="/friends" class="nav-item">
+          <span class="nav-icon">👥</span>
+          Amigos
+          @if (pendingCount$ | async; as count) {
+            <span class="badge">{{ count }}</span>
+          }
+        </a>
+      </nav>
+    </div>
 
     <!-- ÁREA DE CONTENIDO -->
     <div class="content-area">
-      <!-- ESTADÍSTICAS DEL JUGADOR -->
-      <div class="player-stats">
-        <div class="stat-item">
-          <span class="stat-label">Nivel:</span>
-          <span class="stat-value level">15</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-label">Caramelos:</span>
-          <span class="stat-value caramel">{{ totalCaramelos }}</span>
-        </div>
-      </div>
-
       <!-- ESTADÍSTICAS PRINCIPALES -->
       <div class="dashboard-stats">
         <!-- Tarjeta de Xuxes -->
@@ -83,30 +64,47 @@
           </div>
         </div>
       </div>
-
-      <!-- TARJETA DEL XUXEMON DESTACADO -->
-      <div class="xuxemon-card">
-        <h2 class="xuxemon-name">Floppi</h2>
-        
-        <div class="xuxemon-type">
-          <span class="type-badge ground">Tierra</span>
-        </div>
-
-        <div class="xuxemon-image">
-          <div class="image-placeholder">
-            <span>🐻</span>
-          </div>
-        </div>
-
-        <!-- ATAQUE ESPECIAL / BATALLA -->
-        <div class="special-attack">
-          <h3>Ataque Especial</h3>
-          <div class="attack-card">
-            <div class="attack-name">Golpe de Tierra</div>
-            <p style="margin-top: 0.5rem; color: #2c3e50;">Poder: 60 | Precisión: 100%</p>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
+
+<!-- ========== POP-UP DE RECOMPENSAS DIARIAS ========== -->
+@if (showRewardModal) {
+  <div class="reward-overlay">
+    <div class="reward-modal">
+      <div class="reward-header">
+        <span class="sparkles">✨</span>
+        <h2>¡Recompensas Diarias!</h2>
+        <span class="sparkles">✨</span>
+      </div>
+      
+      <p class="reward-subtitle">Tus regalos han llegado por correo Xuxemon:</p>
+      
+      <div class="rewards-container">
+        <!-- Recompensa de Xuxes -->
+        @if (dailyXuxesQuantity > 0) {
+          <div class="reward-item">
+            <div class="reward-icon bounce-animation">🍬</div>
+            <div class="reward-text">
+              <span class="reward-amount">+{{ dailyXuxesQuantity }}</span>
+              <span class="reward-name">{{ dailyXuxesName }}</span>
+            </div>
+          </div>
+        }
+
+        <!-- Recompensa de Xuxemon -->
+        @if (dailyXuxemonName) {
+          <div class="reward-item">
+            <div class="reward-icon pulse-animation">🐉</div>
+            <div class="reward-text">
+              <span class="reward-amount">Nuevo amigo:</span>
+              <span class="reward-name">{{ dailyXuxemonName }}</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <button class="btn-claim" (click)="closeRewardModal()">¡Recoger regalos!</button>
+    </div>
+  </div>
+}
