@@ -1,27 +1,19 @@
 /* =========================================
-   NUEVO: RESET GLOBAL PARA FULLSCREEN TOTAL
+   REGISTER - ESTILO ORIGINAL CON IMAGEN
+   Fondo con imagen de fondo
    ========================================= */
-html, body {
-  margin: 0; /* Quitamos el margen por defecto del navegador */
-  padding: 0; /* Quitamos el relleno por defecto */
-  height: 100%; /* Aseguramos que ocupe todo el alto */
-  width: 100%; /* Aseguramos que ocupe todo el ancho */
-}
 
-/* =========================================
-   FONDO DE PANTALLA COMPLETA
-   ========================================= */
-.background-wrapper {
-  min-height: 100vh;
+:host {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* La misma imagen épica para el registro */
-  background-image: url('/images/login-registro.jpg'); 
+  min-height: 100vh;
+  background-image: url('/images/login-registro.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.15);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* =========================================
@@ -43,19 +35,25 @@ html, body {
   border: 1px solid rgba(255, 255, 255, 0.2); 
 }
 
+/* Cambiar color del título "Crear cuenta en Xuxedex" */
+.register-container h2 {
+  color: #3498db !important; /* Color azul para destacar */
+}
+
 .login-link {
   margin-top: 20px;
   font-size: 0.9em;
 }
 
 .login-link a {
-  color: #2563eb;
+  color: #2c3e50;
   text-decoration: none;
   font-weight: bold;
 }
 
 .login-link a:hover {
   text-decoration: underline;
+  color: #3498db;
 }
 
 /* =========================================
@@ -68,24 +66,38 @@ input {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
+  color: #2c3e50;
+}
+
+input::placeholder {
+  color: #5a6e7e;
 }
 
 button {
   width: 100%;
   padding: 12px;
-  background-color: #2563eb;
+  background-color: rgba(52, 152, 219, 0.7);
   color: white;
-  border: none;
-  border-radius: 4px;
-  font-weight: bold;
-  font-size: 1rem;
+  border: 1px solid rgba(52, 152, 219, 0.5);
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 1.1rem;
   cursor: pointer;
   margin-top: 10px;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
+  backdrop-filter: blur(5px);
 }
 
-button:hover {
-  background-color: #1d4ed8;
+button:hover:not(:disabled) {
+  background-color: #3498db;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+button:disabled {
+  background-color: rgba(189, 195, 199, 0.5);
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* =========================================
@@ -128,7 +140,7 @@ input.ng-valid.ng-touched {
 }
 
 .error-msg small {
-  color: #ff4444;
+  color: #e74c3c;
   font-size: 0.85rem;
   font-weight: bold;
   display: block;
@@ -183,7 +195,7 @@ input.ng-valid.ng-touched {
 }
 
 .modal-box p {
-  color: #64748b;
+  color: #34495e;
   margin-bottom: 20px;
   line-height: 1.5;
 }
