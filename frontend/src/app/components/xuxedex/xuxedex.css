@@ -453,12 +453,20 @@ main { max-width: 1400px; margin: 0 auto; padding: 2rem; }
 .modal-content { background: white; padding: 25px; border-radius: 16px; width: 90%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .modal-header h2 { margin: 0; font-size: 1.5rem; color: #2c3e50; }
-.btn-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+.btn-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #2c3e50; }
+
 .form-group { margin-bottom: 15px; }
 .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #34495e; }
-.form-control { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #bdc3c7; box-sizing: border-box; }
-.preview-box { background-color: #ebf5fb; padding: 10px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #3498db; }
+
+/* -- Correcció de lletra i fons als inputs i selects -- */
+.form-control { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #bdc3c7; box-sizing: border-box; color: #2c3e50; background-color: #ffffff; font-size: 1rem; }
+.form-control option { color: #2c3e50; }
+
+/* -- Correcció de lletra a la caixa de Preview -- */
+.preview-box { background-color: #ebf5fb; padding: 10px 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #3498db; }
+.preview-box p { color: #2c3e50; margin-top: 0; margin-bottom: 5px; }
 .highlight-text { margin: 0; font-weight: bold; color: #2980b9; }
+
 .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 .btn-cancel, .btn-confirm { padding: 10px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
 .btn-cancel { background-color: #ecf0f1; color: #7f8c8d; }

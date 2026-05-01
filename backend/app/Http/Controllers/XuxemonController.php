@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Xuxemon;
 use App\Models\UserXuxemon;
 use App\Models\UserItem;
+use App\Models\Configuracion; // Afegim això per poder llegir les opcions de l'admin
 
 class XuxemonController extends Controller
 {
@@ -94,7 +95,7 @@ class XuxemonController extends Controller
             ->firstOrFail();
 
         // 1. Validació de la malaltia "Atracón"
-        if ($userXuxemon->enfermedad === 'Atracón') {
+        if ($userXuxemon->enfermedad === 'Atracón' || $userXuxemon->enfermedad === 'Atracon') {
             return response()->json(['success' => false, 'message' => 'El teu Xuxemon té un Atracón i no pot menjar!'], 400);
         }
 
@@ -103,7 +104,6 @@ class XuxemonController extends Controller
             ->where('user_id', auth()->id())
             ->firstOrFail();
 
-        // Usem 'quantity' de la base de dades
         if ($userItem->quantity < $request->cantidad) {
             return response()->json(['success' => false, 'message' => 'No tens suficients xuxes a la motxilla!'], 400);
         }
@@ -115,28 +115,40 @@ class XuxemonController extends Controller
             $userItem->save();
         }
 
-        // 3. Sistema d'infecció probabilístic (per cada xuxe)
+        // =========================================================
+        // LLEGIM LA CONFIGURACIÓ DE L'ADMINISTRADOR DE LA BBDD
+        // (Si no existeix encara a la bbdd, posem els valors per defecte)
+        // =========================================================
+        $probInfeccion = json_decode(Configuracion::where('clave', 'probabilidad_infeccion')->value('valor')) ?? 30;
+        $reqMediano = json_decode(Configuracion::where('clave', 'xuxes_mediano')->value('valor')) ?? 3;
+        $reqGrande = json_decode(Configuracion::where('clave', 'xuxes_grande')->value('valor')) ?? 5;
+
+        // 3. Sistema d'infecció probabilístic dinàmic
         for ($i = 0; $i < $request->cantidad; $i++) {
             $rand = rand(1, 100);
-            if ($rand <= 5) {
-                $userXuxemon->enfermedad = 'Bajón de azúcar';
-            } elseif ($rand > 5 && $rand <= 15) {
-                $userXuxemon->enfermedad = 'Sobredosis de sucre';
-            } elseif ($rand > 15 && $rand <= 30) {
-                $userXuxemon->enfermedad = 'Atracón';
+            
+            // Si el número aleatori és menor o igual al % de l'admin, es posa malalt
+            if ($rand <= $probInfeccion) {
+                // Un cop malalt, decidim a sort si és Bajón (50%) o Atracón (50%)
+                if (rand(1, 2) === 1) {
+                    $userXuxemon->enfermedad = 'Bajón de azúcar';
+                } else {
+                    $userXuxemon->enfermedad = 'Atracón';
+                }
             }
         }
-
-        // 4. Lògica d'Evolució
+   
+        // 4. Lògica d'Evolució dinàmica
         $userXuxemon->xuxes_comidas += $request->cantidad;
 
         $xuxesNecessaries = 999; 
         if ($userXuxemon->size === 'Pequeño') {
-            $xuxesNecessaries = 3;
+            $xuxesNecessaries = (int)$reqMediano; // Llegit del Panell Admin
         } elseif ($userXuxemon->size === 'Mediano') {
-            $xuxesNecessaries = 5;
+            $xuxesNecessaries = (int)$reqGrande; // Llegit del Panell Admin
         }
 
+        // La regla del Bajón de azúcar es manté sempre activa
         if ($userXuxemon->enfermedad === 'Bajón de azúcar') {
             $xuxesNecessaries += 2;
         }
@@ -175,12 +187,10 @@ class XuxemonController extends Controller
             return response()->json(['success' => false, 'message' => 'Aquest Xuxemon ja està completament sa.'], 400);
         }
 
-        // No utilitzem with() perquè llegim directament la taula user_items
         $userItem = UserItem::where('id', $request->user_item_id)
             ->where('user_id', auth()->id())
             ->firstOrFail();
 
-        // Llegim la columna 'name'
         $nomVacuna = $userItem->name;
         $curat = false;
         $missatge = '';
@@ -202,7 +212,6 @@ class XuxemonController extends Controller
             $userXuxemon->enfermedad = null;
             $userXuxemon->save();
 
-            // Usem 'quantity' per restar
             $userItem->quantity -= 1;
             if ($userItem->quantity <= 0) {
                 $userItem->delete();

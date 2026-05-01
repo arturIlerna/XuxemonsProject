@@ -102,6 +102,15 @@ export class Auth {
       quantity: quantity
     });
   }
+
+  // ========== NUEVO: DAR VACUNAS ==========
+  giveVacunas(userId: number, name: string, quantity: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/admin/give-vacunas`, {
+      user_id: userId,
+      name: name,
+      quantity: quantity
+    });
+  }
   
   getMyInventory(): Observable<any> {
     return this.http.get(`${this.apiUrl}/my-inventory`);

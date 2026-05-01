@@ -28,7 +28,7 @@
   </header>
 
   <!-- ALERTES GLOBALS -->
-  @if (mensajeError && !modalAlimentarVisible && !modalCurarVisible) {
+  @if (mensajeError && !modalAlimentarVisible && !modalCurarVisible && !modalAvisoVisible) {
     <div class="alert error" style="margin-bottom: 20px; text-align: center;">
       {{ mensajeError }}
     </div>
@@ -147,11 +147,11 @@
             @if (viewMode === 'mis-xuxemons') {
               <footer class="card-footer" style="padding: 15px;">
                 <div class="action-buttons" style="display: flex; gap: 10px; width: 100%;">
+                  <!-- Botó Alimentar ara sempre cliquable -->
                   <button 
                     class="btn-action btn-feed" 
                     style="flex: 1; padding: 10px; border-radius: 20px; border: none; font-weight: bold; background: #f39c12; color: white; cursor: pointer;"
-                    (click)="abrirModalAlimentar(xuxemon)" 
-                    [disabled]="xuxemon.enfermedad === 'Atracón'">
+                    (click)="abrirModalAlimentar(xuxemon)">
                     🍗 Alimentar
                   </button>
                   <button 
@@ -170,9 +170,27 @@
     </section>
   }
 
-  <!-- =============================== -->
-  <!-- MODALS DEL NIVELL 3             -->
-  <!-- =============================== -->
+ <!-- =============================== -->
+ <!-- MODALS DEL NIVELL 3             -->
+ <!-- =============================== -->
+
+  <!-- MODAL AVÍS (Per a l'Atracón) -->
+  @if (modalAvisoVisible) {
+    <div class="modal-overlay">
+      <div class="modal-content" style="text-align: center; max-width: 350px;">
+        <header class="modal-header" style="justify-content: center; border-bottom: none;">
+          <h2 style="color: #e67e22; font-size: 1.8rem;">⚠️ Avís</h2>
+        </header>
+        <div class="modal-body">
+          <div style="font-size: 4rem; margin-bottom: 10px;">🤢</div>
+          <p style="font-size: 1.1rem; color: #34495e; font-weight: 500;">{{ mensajeAviso }}</p>
+        </div>
+        <footer class="modal-footer" style="justify-content: center; border-top: none; margin-top: 10px;">
+          <button (click)="cerrarModales()" class="btn-confirm" style="width: 100%; background-color: #e67e22;">Entès</button>
+        </footer>
+      </div>
+    </div>
+  }
 
   <!-- MODAL ALIMENTAR -->
   @if (modalAlimentarVisible) {

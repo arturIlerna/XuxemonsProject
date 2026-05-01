@@ -44,6 +44,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/users', [AuthController::class, 'index']);
     Route::post('/admin/give-xuxemon', [AdminController::class, 'giveRandomXuxemon']);
     Route::post('/admin/give-xuxes', [AdminController::class, 'giveXuxes']);
+    Route::post('/admin/give-vacunas', [AdminController::class, 'giveVacunas']); // <-- NOVA RUTA
 
     // CRUD Global de Especies Xuxemon
     Route::post('/xuxemons', [XuxemonController::class, 'store']);
