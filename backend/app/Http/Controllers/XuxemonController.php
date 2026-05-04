@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Xuxemon;
 use App\Models\UserXuxemon;
 use App\Models\UserItem;
-use App\Models\Configuracion; // Afegim això per poder llegir les opcions de l'admin
+use App\Models\Configuracion;
 
 class XuxemonController extends Controller
 {
@@ -23,19 +23,35 @@ class XuxemonController extends Controller
             $query->where('size', $request->size);
         }
         
-        return response()->json($query->get());
+        $xuxemons = $query->get();
+        
+        // Agregar la imagen según el tamaño de cada Xuxemon
+        foreach ($xuxemons as $xuxemon) {
+            $size = $xuxemon->size ?? 'Pequeño';
+            $sizeNormalizado = str_replace('Pequeño', 'Pequeno', $size);
+            $xuxemon->image = "images/xuxemons/{$xuxemon->name}_{$sizeNormalizado}.webp";
+        }
+        
+        return response()->json($xuxemons);
     }
     
-    // Mis Xuxemons (colección del usuario)
+    // Mis Xuxemons (colección del usuario) - CON IMAGEN SEGÚN TAMAÑO
     public function myCollection()
     {
         $userXuxemons = UserXuxemon::where('user_id', auth()->id())
             ->with('xuxemon')
             ->get()
             ->map(function ($userXuxemon) {
+                
+                $nombreBase = $userXuxemon->xuxemon->name;
+                $tamaño = $userXuxemon->size;
+                $tamañoNormalizado = str_replace('Pequeño', 'Pequeno', $tamaño);
+                $imagen = "images/xuxemons/{$nombreBase}_{$tamañoNormalizado}.webp";
+                
                 return [
                     'id' => $userXuxemon->id,
                     'name' => $userXuxemon->xuxemon->name,
+                    'image' => $imagen,
                     'type' => $userXuxemon->xuxemon->type,
                     'size' => $userXuxemon->size,
                     'level' => $userXuxemon->xuxemon->level,
@@ -82,7 +98,7 @@ class XuxemonController extends Controller
         return response()->json(['message' => 'Xuxemon eliminado']);
     }
     
-    // ========== NIVELL 3: ALIMENTAR XUXEMON ==========
+    // ========== NIVEL 3: ALIMENTAR XUXEMON ==========
     public function feed(Request $request, $id)
     {
         $request->validate([
@@ -94,12 +110,10 @@ class XuxemonController extends Controller
             ->where('user_id', auth()->id())
             ->firstOrFail();
 
-        // 1. Validació de la malaltia "Atracón"
         if ($userXuxemon->enfermedad === 'Atracón' || $userXuxemon->enfermedad === 'Atracon') {
             return response()->json(['success' => false, 'message' => 'El teu Xuxemon té un Atracón i no pot menjar!'], 400);
         }
 
-        // 2. Descomptar Xuxes de la motxilla
         $userItem = UserItem::where('id', $request->user_item_id)
             ->where('user_id', auth()->id())
             ->firstOrFail();
@@ -115,21 +129,14 @@ class XuxemonController extends Controller
             $userItem->save();
         }
 
-        // =========================================================
-        // LLEGIM LA CONFIGURACIÓ DE L'ADMINISTRADOR DE LA BBDD
-        // (Si no existeix encara a la bbdd, posem els valors per defecte)
-        // =========================================================
         $probInfeccion = json_decode(Configuracion::where('clave', 'probabilidad_infeccion')->value('valor')) ?? 30;
         $reqMediano = json_decode(Configuracion::where('clave', 'xuxes_mediano')->value('valor')) ?? 3;
         $reqGrande = json_decode(Configuracion::where('clave', 'xuxes_grande')->value('valor')) ?? 5;
 
-        // 3. Sistema d'infecció probabilístic dinàmic
         for ($i = 0; $i < $request->cantidad; $i++) {
             $rand = rand(1, 100);
             
-            // Si el número aleatori és menor o igual al % de l'admin, es posa malalt
             if ($rand <= $probInfeccion) {
-                // Un cop malalt, decidim a sort si és Bajón (50%) o Atracón (50%)
                 if (rand(1, 2) === 1) {
                     $userXuxemon->enfermedad = 'Bajón de azúcar';
                 } else {
@@ -138,41 +145,56 @@ class XuxemonController extends Controller
             }
         }
    
-        // 4. Lògica d'Evolució dinàmica
         $userXuxemon->xuxes_comidas += $request->cantidad;
 
         $xuxesNecessaries = 999; 
         if ($userXuxemon->size === 'Pequeño') {
-            $xuxesNecessaries = (int)$reqMediano; // Llegit del Panell Admin
+            $xuxesNecessaries = (int)$reqMediano;
         } elseif ($userXuxemon->size === 'Mediano') {
-            $xuxesNecessaries = (int)$reqGrande; // Llegit del Panell Admin
+            $xuxesNecessaries = (int)$reqGrande;
         }
 
-        // La regla del Bajón de azúcar es manté sempre activa
         if ($userXuxemon->enfermedad === 'Bajón de azúcar') {
             $xuxesNecessaries += 2;
         }
 
         $missatge = 'Xuxemon alimentat correctament.';
+        $evoluciono = false;
 
         if ($userXuxemon->size !== 'Grande' && $userXuxemon->xuxes_comidas >= $xuxesNecessaries) {
             $userXuxemon->size = ($userXuxemon->size === 'Pequeño') ? 'Mediano' : 'Grande';
             $userXuxemon->xuxes_comidas = 0; 
             $missatge = 'El teu Xuxemon ha evolucionat a mida ' . $userXuxemon->size . '!';
+            $evoluciono = true;
         } elseif ($userXuxemon->size === 'Grande') {
             $missatge = 'El teu Xuxemon ja és de mida màxima, però ha disfrutat el menjar.';
         }
 
         $userXuxemon->save();
 
+        $nombreBase = $userXuxemon->xuxemon->name;
+        $tamañoNormalizado = str_replace('Pequeño', 'Pequeno', $userXuxemon->size);
+        $nuevaImagen = "images/xuxemons/{$nombreBase}_{$tamañoNormalizado}.webp";
+
         return response()->json([
             'success' => true,
             'message' => $missatge,
-            'xuxemon' => $userXuxemon
+            'evoluciono' => $evoluciono,
+            'xuxemon' => [
+                'id' => $userXuxemon->id,
+                'name' => $userXuxemon->xuxemon->name,
+                'image' => $nuevaImagen,
+                'size' => $userXuxemon->size,
+                'level' => $userXuxemon->xuxemon->level,
+                'attack' => $userXuxemon->xuxemon->attack,
+                'defense' => $userXuxemon->xuxemon->defense,
+                'enfermedad' => $userXuxemon->enfermedad,
+                'xuxes_comidas' => $userXuxemon->xuxes_comidas
+            ]
         ]);
     }
 
-    // ========== NIVELL 3: APLICAR VACUNES ==========
+    // ========== NIVEL 3: APLICAR VACUNAS ==========
     public function aplicarVacuna(Request $request, $id)
     {
         $request->validate([
@@ -191,7 +213,7 @@ class XuxemonController extends Controller
             ->where('user_id', auth()->id())
             ->firstOrFail();
 
-        $nomVacuna = $userItem->name;
+        $nomVacuna = $userItem->item->name ?? $userItem->name;
         $curat = false;
         $missatge = '';
 

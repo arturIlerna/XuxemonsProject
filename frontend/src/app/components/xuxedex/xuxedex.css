@@ -481,3 +481,12 @@ main { max-width: 1400px; margin: 0 auto; padding: 2rem; }
   .filter-buttons { justify-content: center; }
   .action-buttons { flex-direction: column; }
 }
+/* Estilos para las imágenes de Xuxemons */
+.xuxemon-img {
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #f7d44c, #f5a623);
+  padding: 10px;
+}

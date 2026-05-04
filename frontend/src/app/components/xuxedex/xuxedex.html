@@ -103,13 +103,9 @@
               <span class="xuxemon-level">Nv. {{ xuxemon.level || 1 }}</span>
             </header>
             
-            <!-- Imatge (amb classe d'animació preparada) -->
+            <!-- IMAGEN REAL DESDE LA BASE DE DATOS -->
             <div class="card-image">
-              <div class="image-placeholder" 
-                   [style.background]="getTypeGradient(xuxemon.type)"
-                   [class.evolving-animation]="xuxemon.id === evolvingXuxemonId">
-                <span class="xuxemon-icon">✨</span>
-              </div>
+              <img [src]="'/' + xuxemon.image" [alt]="xuxemon.name" class="xuxemon-img">
             </div>
             
             <div class="card-body">
@@ -147,7 +143,6 @@
             @if (viewMode === 'mis-xuxemons') {
               <footer class="card-footer" style="padding: 15px;">
                 <div class="action-buttons" style="display: flex; gap: 10px; width: 100%;">
-                  <!-- Botó Alimentar ara sempre cliquable -->
                   <button 
                     class="btn-action btn-feed" 
                     style="flex: 1; padding: 10px; border-radius: 20px; border: none; font-weight: bold; background: #f39c12; color: white; cursor: pointer;"
@@ -170,11 +165,7 @@
     </section>
   }
 
- <!-- =============================== -->
- <!-- MODALS DEL NIVELL 3             -->
- <!-- =============================== -->
-
-  <!-- MODAL AVÍS (Per a l'Atracón) -->
+  <!-- MODALS -->
   @if (modalAvisoVisible) {
     <div class="modal-overlay">
       <div class="modal-content" style="text-align: center; max-width: 350px;">
@@ -192,7 +183,6 @@
     </div>
   }
 
-  <!-- MODAL ALIMENTAR -->
   @if (modalAlimentarVisible) {
     <div class="modal-overlay">
       <div class="modal-content">
@@ -240,7 +230,6 @@
     </div>
   }
 
-  <!-- MODAL CURAR -->
   @if (modalCurarVisible) {
     <div class="modal-overlay">
       <div class="modal-content">

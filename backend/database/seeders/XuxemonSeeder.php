@@ -9,20 +9,32 @@ class XuxemonSeeder extends Seeder
 {
     public function run(): void
     {
-        // Nuestro catálogo oficial de Xuxemons
+        // Nuestro catálogo oficial de Xuxemons (todos tamaño Pequeño)
         $xuxemons = [
-            ['name' => 'Floppi', 'type' => 'Tierra', 'size' => 'Pequeño', 'level' => 5, 'attack' => 40, 'defense' => 50],
-            ['name' => 'Charmander', 'type' => 'Aire', 'size' => 'Mediano', 'level' => 18, 'attack' => 70, 'defense' => 45],
-            ['name' => 'Squirtle', 'type' => 'Agua', 'size' => 'Pequeño', 'level' => 10, 'attack' => 45, 'defense' => 60],
-            ['name' => 'Bulbasaur', 'type' => 'Tierra', 'size' => 'Mediano', 'level' => 20, 'attack' => 60, 'defense' => 65],
-            ['name' => 'Pikachu', 'type' => 'Aire', 'size' => 'Pequeño', 'level' => 8, 'attack' => 55, 'defense' => 40],
-            ['name' => 'Geodude', 'type' => 'Tierra', 'size' => 'Pequeño', 'level' => 15, 'attack' => 50, 'defense' => 75],
-            ['name' => 'Pidgey', 'type' => 'Aire', 'size' => 'Pequeño', 'level' => 7, 'attack' => 45, 'defense' => 35],
+            ['name' => 'Aerion', 'type' => 'Aire', 'size' => 'Pequeño', 'level' => 5, 'attack' => 40, 'defense' => 50],
+            ['name' => 'Aurael', 'type' => 'Aire', 'size' => 'Pequeño', 'level' => 18, 'attack' => 70, 'defense' => 45],
+            ['name' => 'Batty', 'type' => 'Aire', 'size' => 'Pequeño', 'level' => 10, 'attack' => 45, 'defense' => 60],
+            ['name' => 'Huracan', 'type' => 'Aire', 'size' => 'Pequeño', 'level' => 20, 'attack' => 60, 'defense' => 65],
+            ['name' => 'Plumy', 'type' => 'Aire', 'size' => 'Pequeño', 'level' => 8, 'attack' => 55, 'defense' => 40],
+            ['name' => 'Ventus', 'type' => 'Aire', 'size' => 'Pequeño', 'level' => 15, 'attack' => 50, 'defense' => 75],
+            ['name' => 'Dolfin', 'type' => 'Agua', 'size' => 'Pequeño', 'level' => 5, 'attack' => 40, 'defense' => 50],
+            ['name' => 'Gangrer', 'type' => 'Agua', 'size' => 'Pequeño', 'level' => 18, 'attack' => 70, 'defense' => 45],
+            ['name' => 'langostini', 'type' => 'Agua', 'size' => 'Pequeño', 'level' => 10, 'attack' => 45, 'defense' => 60],
+            ['name' => 'Manantial', 'type' => 'Agua', 'size' => 'Pequeño', 'level' => 20, 'attack' => 60, 'defense' => 65],
+            ['name' => 'Marea', 'type' => 'Agua', 'size' => 'Pequeño', 'level' => 8, 'attack' => 55, 'defense' => 40],
+            ['name' => 'Medusi', 'type' => 'Agua', 'size' => 'Pequeño', 'level' => 15, 'attack' => 50, 'defense' => 75],
+            ['name' => 'Patigua', 'type' => 'Agua', 'size' => 'Pequeño', 'level' => 5, 'attack' => 50, 'defense' => 40],
+            ['name' => 'Grisli', 'type' => 'Agua', 'size' => 'Pequeño', 'level' => 5, 'attack' => 40, 'defense' => 50],
+            ['name' => 'Lion', 'type' => 'Agua', 'size' => 'Pequeño', 'level' => 18, 'attack' => 70, 'defense' => 45],
+            ['name' => 'Lodo', 'type' => 'Agua', 'size' => 'Pequeño', 'level' => 10, 'attack' => 45, 'defense' => 60],
+            ['name' => 'Roc', 'type' => 'Agua', 'size' => 'Pequeño', 'level' => 20, 'attack' => 60, 'defense' => 65],
+            ['name' => 'Tortu', 'type' => 'Agua', 'size' => 'Pequeño', 'level' => 8, 'attack' => 55, 'defense' => 40],
+            ['name' => 'Tronc', 'type' => 'Agua', 'size' => 'Pequeño', 'level' => 15, 'attack' => 50, 'defense' => 75],
+            
         ];
 
-        // Los insertamos uno a uno en la base de datos
         foreach ($xuxemons as $xuxe) {
-            Xuxemon::create($xuxe);
+            Xuxemon::updateOrCreate(['name' => $xuxe['name']], $xuxe);
         }
     }
 }
