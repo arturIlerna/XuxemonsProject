@@ -16,7 +16,7 @@ class FriendController extends Controller
             'query' => 'required|string|min:3'
         ]);
         
-        $query = $request->input('query'); // Cambiado de $request->query a $request->input()
+        $query = $request->input('query'); 
         $userId = auth()->id();
         
         $users = User::where('id', '!=', $userId)

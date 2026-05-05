@@ -111,7 +111,7 @@ class AdminController extends Controller
         ], 200);
     }
 
-    // ========== NUEVO: DAR VACUNAS ==========
+    // ========== DAR VACUNAS ==========
     public function giveVacunas(Request $request)
     {
         $request->validate([
